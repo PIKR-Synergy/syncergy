@@ -229,8 +229,6 @@ flowchart LR
     end
 ```
 
-**Lihat detail workflow** di `docs/workflow_app.mmd`.
-
 ## API Endpoints
 
 Contoh REST API:
