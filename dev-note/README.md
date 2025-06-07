@@ -50,9 +50,10 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 * **Desain Arsitektur**: MVC (Model-View-Controller)
 * **ORM**: Eloquent ORM
 * **Database**: MySQL 8.x
-* **Frontend**: React / Vue / Angular (terpisah via API)
+* **Frontend**: Next.js (React + SSR / SSG, berkomunikasi dengan API Laravel)
 * **Cache & Queue (opsional)**: Redis, Laravel Queue, Horizon
 * **Scheduler**: Laravel Schedule (menggantikan MySQL event scheduler jika diinginkan)
+* **API**: API Laravel untuk berkomunikasi dengan frontend Next.js
 * **Diagram**: Mermaid.js untuk dokumentasi flowchart
   
 ## Database Schema
