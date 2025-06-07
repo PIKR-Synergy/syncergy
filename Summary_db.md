@@ -1,243 +1,459 @@
-# KESIMPULAN DATABASE PIK-R SYNERGY (VERSI DIPERBAIKI)
+# KESIMPULAN DATABASE PIK-R SYNERGY (ENHANCED VERSION 3.0)
 
 ## 📁 **1. TABEL `users` (Pengguna Sistem)**
 
-| Field           | Tipe Data    | Keterangan                                    |
-| --------------- | ------------ | --------------------------------------------- |
-| `user_id`       | INT (PK, AI) | ID unik pengguna                              |
-| `name`          | VARCHAR(100) | Nama lengkap                                  |
-| `username`      | VARCHAR(50)  | Username login (UNIQUE)                       |
-| `password_hash` | VARCHAR(255) | Password yang di-hash (bcrypt/argon2)         |
-| `role`          | ENUM         | ('admin', 'pengurus', 'konselor', 'tamu')     |
-| `email`         | VARCHAR(100) | Email (UNIQUE jika diisi)                     |
-| `phone`         | VARCHAR(20)  | Nomor telepon dengan validasi format          |
-| `is_active`     | BOOLEAN      | Status aktif user (default: TRUE)            |
-| `created_at`    | DATETIME     | Waktu pembuatan data                          |
-| `updated_at`    | DATETIME     | Waktu update terakhir data                    |
-| `deleted_at`    | DATETIME     | Soft delete timestamp                         |
+| Field                       | Tipe Data        | Keterangan                                                                 |
+|-----------------------------|------------------|----------------------------------------------------------------------------|
+| `user_id`                   | INT (PK, AI)     | ID unik pengguna                                                           |
+| `name`                      | VARCHAR(100)     | Nama lengkap                                                               |
+| `username`                  | VARCHAR(50)      | Username login (UNIQUE)                                                    |
+| `password_hash`             | VARCHAR(255)     | Password yang di-hash (bcrypt/argon2)                                      |
+| `role`                      | ENUM             | ('admin', 'pengurus', 'konselor', 'tamu')                                  |
+| `email`                     | VARCHAR(100)     | Email (UNIQUE jika diisi)                                                  |
+| `phone`                     | VARCHAR(20)      | Nomor telepon dengan validasi format                                       |
+| `is_active`                 | BOOLEAN          | Status aktif user (default: TRUE)                                          |
+| `password_expires_at`       | DATETIME         | Tanggal kedaluwarsa password                                               |
+| `failed_login_attempts`     | INT              | Jumlah percobaan login gagal (default: 0)                                  |
+| `locked_until`              | DATETIME         | Waktu akun terkunci hingga                                                 |
+| `last_login_at`             | DATETIME         | Waktu login terakhir                                                       |
+| `last_login_ip`             | VARCHAR(45)      | IP terakhir yang digunakan login                                           |
+| `email_verified`            | BOOLEAN          | Status verifikasi email (default: FALSE)                                   |
+| `email_verification_token`  | VARCHAR(255)     | Token untuk verifikasi email                                               |
+| `password_reset_token`      | VARCHAR(255)     | Token untuk reset password                                                 |
+| `password_reset_expires`    | DATETIME         | Waktu kedaluwarsa token reset password                                     |
+| `created_at`                | DATETIME         | Waktu pembuatan data (default: CURRENT_TIMESTAMP)                          |
+| `updated_at`                | DATETIME         | Waktu update terakhir (default: CURRENT_TIMESTAMP ON UPDATE)               |
+| `deleted_at`                | DATETIME         | Soft delete timestamp                                                      |
 
 ---
 
-## 📁 **2. TABEL `biodata_pengurus`**
+## 📁 **2. TABEL `user_sessions` (Manajemen Sesi)**
 
-| Field            | Tipe Data    | Keterangan              |
-| ---------------- | ------------ | ----------------------- |
-| `id`             | INT (PK, AI) | ID unik                 |
-| `user_id`        | INT (FK)     | Relasi ke `users`       |
-| `tanggal_lahir`  | DATE         |                         |
-| `nama_orang_tua` | VARCHAR(100) |                         |
-| `alamat`         | TEXT         | Alamat lengkap pengurus |
-| `jabatan`        | VARCHAR(100) | Di organisasi           |
-| `foto`           | TEXT         | URL file upload         |
-| `keterangan`     | TEXT         |                         |
-| `created_at`     | DATETIME     | Waktu pembuatan data    |
-| `updated_at`     | DATETIME     | Waktu update terakhir   |
+| Field               | Tipe Data        | Keterangan                                                                 |
+|---------------------|------------------|----------------------------------------------------------------------------|
+| `id`                | VARCHAR(128) (PK)| ID sesi (biasanya session ID)                                              |
+| `user_id`           | INT              | ID pengguna (FK ke users)                                                  |
+| `ip_address`        | VARCHAR(45)      | Alamat IP pengguna saat login                                              |
+| `user_agent`        | TEXT             | User agent browser/perangkat                                               |
+| `is_active`         | BOOLEAN          | Status sesi aktif (default: TRUE)                                          |
+| `created_at`        | DATETIME         | Waktu pembuatan sesi (default: CURRENT_TIMESTAMP)                          |
+| `last_activity_at`  | DATETIME         | Waktu aktivitas terakhir (default: CURRENT_TIMESTAMP ON UPDATE)            |
+| `expires_at`        | DATETIME         | Waktu kedaluwarsa sesi                                                     |
 
 ---
 
-## 📁 **3. TABEL `rapat`**
+## 📁 **3. TABEL `biodata_pengurus` (Biodata Pengurus)**
 
-| Field           | Tipe Data    | Keterangan                                   |
-| --------------- | ------------ | -------------------------------------------- |
-| `id`            | INT (PK, AI) |                                              |
-| `nama_rapat`    | VARCHAR(255) |                                              |
-| `isi`           | TEXT         | Ringkasan/deskripsi rapat                    |
-| `tanggal_rapat` | DATETIME     | Waktu pelaksanaan rapat                      |
-| `tempat`        | TEXT         | Lokasi rapat                                 |
-| `status`        | ENUM         | ('draft', 'terjadwal', 'berlangsung', 'selesai', 'batal') |
-| `created_at`    | DATETIME     | Waktu pembuatan data                         |
-| `updated_at`    | DATETIME     | Waktu update terakhir                        |
-
----
-
-## 📁 **4. TABEL `absensi_rapat`**
-
-| Field      | Tipe Data    | Keterangan                                  |
-| ---------- | ------------ | ------------------------------------------- |
-| `id`       | INT (PK, AI) |                                             |
-| `rapat_id` | INT (FK)     | Relasi ke `rapat`                           |
-| `user_id`  | INT (FK)     | Relasi ke `users`                           |
-| `status`   | ENUM         | ('hadir', 'tidak_hadir', 'izin', 'terlambat') |
-| `alamat`   | TEXT         | Alamat kehadiran                            |
-| `ttd_path` | TEXT         | Path tanda tangan digital                   |
-| `waktu_absen` | DATETIME  | Waktu melakukan absensi                     |
+| Field             | Tipe Data        | Keterangan                                                                 |
+|-------------------|------------------|----------------------------------------------------------------------------|
+| `id`              | INT (PK, AI)     | ID unik biodata                                                            |
+| `user_id`         | INT              | ID pengguna (FK ke users)                                                  |
+| `tanggal_lahir`   | DATE             | Tanggal lahir                                                              |
+| `nama_orang_tua`  | VARCHAR(100)     | Nama orang tua                                                             |
+| `alamat`          | TEXT             | Alamat lengkap                                                             |
+| `jabatan`         | VARCHAR(100)     | Jabatan dalam organisasi                                                   |
+| `foto`            | TEXT             | Path/link foto                                                             |
+| `keterangan`      | TEXT             | Keterangan tambahan                                                        |
+| `created_at`      | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`      | DATETIME         | Waktu update terakhir                                                      |
 
 ---
 
-## 📁 **5. TABEL `program_kerja`**
+## 📁 **4. TABEL `rapat` (Data Rapat)**
 
-| Field              | Tipe Data    | Keterangan                                   |
-| ------------------ | ------------ | -------------------------------------------- |
-| `id`               | INT (PK, AI) |                                              |
-| `nama_kegiatan`    | VARCHAR(255) |                                              |
-| `tujuan`           | TEXT         |                                              |
-| `sasaran`          | TEXT         |                                              |
-| `mitra_kerja`      | TEXT         | Bisa berupa nama instansi                    |
-| `frekuensi`        | ENUM         | ('Harian', 'Mingguan', 'Bulanan', 'Tahunan') |
-| `hasil_diharapkan` | TEXT         |                                              |
-| `status`           | ENUM         | ('draft', 'aktif', 'selesai', 'ditunda')     |
-| `tanggal_mulai`    | DATE         | Tanggal mulai program                        |
-| `tanggal_selesai`  | DATE         | Tanggal target selesai                       |
-| `keterangan`       | TEXT         |                                              |
-| `created_at`       | DATETIME     | Waktu pembuatan data                         |
-| `updated_at`       | DATETIME     | Waktu update terakhir                        |
+| Field             | Tipe Data        | Keterangan                                                                 |
+|-------------------|------------------|----------------------------------------------------------------------------|
+| `id`              | INT (PK, AI)     | ID unik rapat                                                              |
+| `nama_rapat`      | VARCHAR(255)     | Nama/judul rapat                                                           |
+| `isi`             | TEXT             | Deskripsi rapat                                                            |
+| `tanggal_rapat`   | DATETIME         | Jadwal pelaksanaan rapat                                                   |
+| `tempat`          | TEXT             | Lokasi rapat                                                               |
+| `status`          | ENUM             | ('draft', 'terjadwal', 'berlangsung', 'selesai', 'batal')                  |
+| `created_by`      | INT              | ID pembuat (FK ke users)                                                   |
+| `max_peserta`     | INT              | Batas maksimal peserta (opsional)                                          |
+| `reminder_sent`   | BOOLEAN          | Status pengiriman reminder (default: FALSE)                                |
+| `created_at`      | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`      | DATETIME         | Waktu update terakhir                                                      |
 
 ---
 
-## 📁 **6. TABEL `daftar_hadir_acara`**
+## 📁 **5. TABEL `absensi_rapat` (Absensi Rapat)**
 
-| Field        | Tipe Data    | Keterangan                |
-| ------------ | ------------ | ------------------------- |
-| `id`         | INT (PK, AI) |                           |
-| `tanggal`    | DATE         |                           |
-| `nama_acara` | VARCHAR(255) |                           |
-| `user_id`    | INT (FK)     | Relasi ke `users`         |
-| `status`     | ENUM         | ('hadir', 'tidak_hadir', 'izin') |
-| `alamat`     | TEXT         | Alamat kehadiran          |
-| `ttd_path`   | TEXT         | Path tanda tangan digital |
-| `waktu_hadir`| DATETIME     | Waktu kehadiran           |
-
----
-
-## 📁 **7. TABEL `notulen_rapat`**
-
-| Field            | Tipe Data    | Keterangan        |
-| ---------------- | ------------ | ----------------- |
-| `id`             | INT (PK, AI) |                   |
-| `rapat_id`       | INT (FK)     | Relasi ke `rapat` |
-| `tanggal`        | DATE         |                   |
-| `waktu`          | TIME         |                   |
-| `tempat`         | TEXT         |                   |
-| `jumlah_peserta` | INT          |                   |
-| `materi`         | TEXT         |                   |
-| `isi_notulen`    | TEXT         |                   |
-| `keterangan`     | TEXT         |                   |
-| `notulis_id`     | INT (FK)     | Relasi ke `users` (yang membuat notulen) |
-| `created_at`     | DATETIME     | Waktu pembuatan   |
-| `updated_at`     | DATETIME     | Waktu update      |
+| Field         | Tipe Data        | Keterangan                                                                 |
+|---------------|------------------|----------------------------------------------------------------------------|
+| `id`          | INT (PK, AI)     | ID unik absensi                                                            |
+| `rapat_id`    | INT              | ID rapat (FK ke rapat)                                                     |
+| `user_id`     | INT              | ID pengguna (FK ke users)                                                  |
+| `status`      | ENUM             | ('hadir', 'tidak_hadir', 'izin', 'terlambat') (default: 'tidak_hadir')     |
+| `alamat`      | TEXT             | Alamat saat absen (jika berbeda)                                           |
+| `ttd_path`    | TEXT             | Path tanda tangan digital                                                  |
+| `waktu_absen` | DATETIME         | Waktu absen (default: CURRENT_TIMESTAMP)                                   |
+| `catatan`     | TEXT             | Catatan tambahan                                                           |
 
 ---
 
-## 📁 **8. TABEL `kegiatan`**
+## 📁 **6. TABEL `program_kerja` (Program Kerja)**
 
-| Field           | Tipe Data    | Keterangan |
-| --------------- | ------------ | ---------- |
-| `id`            | INT (PK, AI) |            |
-| `tanggal`       | DATE         |            |
-| `nama_kegiatan` | VARCHAR(255) |            |
-| `sasaran`       | TEXT         |            |
-| `lokasi`        | TEXT         |            |
-| `hasil_dicapai` | TEXT         |            |
-| `status`        | ENUM         | ('direncanakan', 'berlangsung', 'selesai', 'batal') |
-| `penanggung_jawab_id` | INT (FK) | Relasi ke `users` |
-| `keterangan`    | TEXT         |            |
-| `created_at`    | DATETIME     | Waktu pembuatan |
-| `updated_at`    | DATETIME     | Waktu update    |
-
----
-
-## 📁 **9. TABEL `buku_tamu`**
-
-| Field      | Tipe Data    | Keterangan                |
-| ---------- | ------------ | ------------------------- |
-| `id`       | INT (PK, AI) |                           |
-| `tanggal`  | DATE         |                           |
-| `nama`     | VARCHAR(100) |                           |
-| `jabatan`  | VARCHAR(100) |                           |
-| `instansi` | VARCHAR(255) |                           |
-| `tujuan`   | TEXT         |                           |
-| `ttd_path` | TEXT         | Path tanda tangan digital |
-| `waktu_kunjungan` | TIME  | Waktu kunjungan          |
-| `created_at` | DATETIME   | Waktu pencatatan         |
+| Field                 | Tipe Data        | Keterangan                                                                 |
+|-----------------------|------------------|----------------------------------------------------------------------------|
+| `id`                  | INT (PK, AI)     | ID unik program                                                            |
+| `nama_kegiatan`       | VARCHAR(255)     | Nama kegiatan                                                              |
+| `tujuan`              | TEXT             | Tujuan kegiatan                                                            |
+| `sasaran`             | TEXT             | Sasaran kegiatan                                                           |
+| `mitra_kerja`         | TEXT             | Mitra kerja                                                                |
+| `frekuensi`           | ENUM             | ('Harian', 'Mingguan', 'Bulanan', 'Tahunan')                               |
+| `hasil_diharapkan`    | TEXT             | Hasil yang diharapkan                                                      |
+| `status`              | ENUM             | ('draft', 'aktif', 'selesai', 'ditunda', 'dibatalkan') (default: 'draft')  |
+| `tanggal_mulai`       | DATE             | Tanggal mulai kegiatan                                                     |
+| `tanggal_selesai`     | DATE             | Tanggal selesai kegiatan                                                   |
+| `progress_percentage` | DECIMAL(5,2)     | Persentase progres (0.00 - 100.00)                                         |
+| `budget_allocated`    | DECIMAL(15,2)    | Anggaran yang dialokasikan                                                 |
+| `budget_used`         | DECIMAL(15,2)    | Anggaran yang digunakan                                                    |
+| `pic_id`              | INT              | Penanggung jawab (FK ke users)                                             |
+| `keterangan`          | TEXT             | Keterangan tambahan                                                        |
+| `created_at`          | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`          | DATETIME         | Waktu update terakhir                                                      |
 
 ---
 
-## 📁 **10. TABEL `konseling`**
+## 📁 **7. TABEL `daftar_hadir_acara` (Daftar Hadir Acara Umum)**
 
-| Field         | Tipe Data    | Keterangan                               |
-| ------------- | ------------ | ---------------------------------------- |
-| `id`          | INT (PK, AI) |                                          |
-| `tanggal`     | DATE         |                                          |
-| `tema`        | TEXT         |                                          |
-| `konselor_id` | INT (FK)     | Relasi ke `users` dengan role `konselor` |
-| `peserta_id`  | INT (FK)     | Relasi ke `users` (yang dikonseling)    |
-| `status`      | ENUM         | ('terjadwal', 'berlangsung', 'selesai', 'batal') |
-| `catatan`     | TEXT         | Catatan hasil konseling                  |
-| `created_at`  | DATETIME     | Waktu pembuatan                          |
-| `updated_at`  | DATETIME     | Waktu update                             |
-
----
-
-## 📁 **11. TABEL `daftar_konseling`**
-
-| Field               | Tipe Data    | Keterangan                               |
-| ------------------- | ------------ | ---------------------------------------- |
-| `id`                | INT (PK, AI) |                                          |
-| `tanggal_daftar`    | DATE         |                                          |
-| `tanggal_konseling` | DATE         | (harus ≥ `tanggal_daftar`)               |
-| `konselor_id`       | INT (FK)     | Relasi ke `users` dengan role `konselor` |
-| `pendaftar_id`      | INT (FK)     | Relasi ke `users` (yang mendaftar)      |
-| `jenis_konseling`   | ENUM         | ('online', 'offline')                    |
-| `lokasi`            | TEXT         |                                          |
-| `status`            | ENUM         | ('pending', 'disetujui', 'ditolak', 'selesai') |
-| `keterangan`        | TEXT         |                                          |
-| `created_at`        | DATETIME     | Waktu pendaftaran                        |
+| Field         | Tipe Data        | Keterangan                                                                 |
+|---------------|------------------|----------------------------------------------------------------------------|
+| `id`          | INT (PK, AI)     | ID unik kehadiran                                                          |
+| `tanggal`     | DATE             | Tanggal acara                                                              |
+| `nama_acara`  | VARCHAR(255)     | Nama acara                                                                 |
+| `user_id`     | INT              | ID peserta (FK ke users)                                                   |
+| `status`      | ENUM             | ('hadir', 'tidak_hadir', 'izin') (default: 'tidak_hadir')                  |
+| `alamat`      | TEXT             | Alamat saat hadir                                                          |
+| `ttd_path`    | TEXT             | Path tanda tangan digital                                                  |
+| `waktu_hadir` | DATETIME         | Waktu kehadiran                                                            |
+| `catatan`     | TEXT             | Catatan tambahan                                                           |
 
 ---
 
-## 📁 **12. TABEL `file_uploads` (Tambahan)**
+## 📁 **8. TABEL `notulen_rapat` (Notulen Rapat)**
 
-| Field           | Tipe Data    | Keterangan                    |
-| --------------- | ------------ | ----------------------------- |
-| `id`            | INT (PK, AI) |                               |
-| `filename`      | VARCHAR(255) | Nama file di server           |
-| `original_name` | VARCHAR(255) | Nama file asli                |
-| `file_path`     | TEXT         | Path lengkap file             |
-| `file_size`     | INT          | Ukuran file dalam bytes       |
-| `mime_type`     | VARCHAR(100) | Tipe file (image/pdf/etc)     |
-| `uploaded_by`   | INT (FK)     | Relasi ke `users`             |
-| `uploaded_at`   | DATETIME     | Waktu upload                  |
-
----
-
-## 📁 **13. TABEL `activity_logs` (Tambahan)**
-
-| Field         | Tipe Data    | Keterangan                |
-| ------------- | ------------ | ------------------------- |
-| `id`          | INT (PK, AI) |                           |
-| `user_id`     | INT (FK)     | Relasi ke `users`         |
-| `action`      | VARCHAR(100) | Jenis aksi (create, update, delete) |
-| `table_name`  | VARCHAR(50)  | Nama tabel yang diubah    |
-| `record_id`   | INT          | ID record yang diubah     |
-| `description` | TEXT         | Deskripsi aktivitas       |
-| `ip_address`  | VARCHAR(45)  | IP address user           |
-| `user_agent`  | TEXT         | Browser/device info       |
-| `created_at`  | DATETIME     | Waktu aktivitas           |
+| Field               | Tipe Data        | Keterangan                                                                 |
+|---------------------|------------------|----------------------------------------------------------------------------|
+| `id`                | INT (PK, AI)     | ID unik notulen                                                            |
+| `rapat_id`          | INT              | ID rapat (FK ke rapat)                                                     |
+| `tanggal`           | DATE             | Tanggal rapat                                                              |
+| `waktu`             | TIME             | Waktu mulai rapat                                                          |
+| `tempat`            | TEXT             | Tempat rapat                                                               |
+| `jumlah_peserta`    | INT              | Jumlah peserta hadir                                                       |
+| `materi`            | TEXT             | Materi rapat                                                               |
+| `isi_notulen`       | TEXT             | Isi lengkap notulen                                                        |
+| `keterangan`        | TEXT             | Keterangan tambahan                                                        |
+| `notulis_id`        | INT              | ID notulis (FK ke users)                                                   |
+| `status`            | ENUM             | ('draft', 'review', 'approved', 'published') (default: 'draft')            |
+| `approved_by`       | INT              | ID yang menyetujui (FK ke users)                                           |
+| `approved_at`       | DATETIME         | Waktu persetujuan                                                          |
+| `created_at`        | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`        | DATETIME         | Waktu update terakhir                                                      |
 
 ---
 
-## 📁 **14. Relasi (Relationships)**
+## 📁 **9. TABEL `kegiatan` (Kegiatan Dilaksanakan)**
 
-### **Primary Relationships:**
-- `users` → Hub utama untuk semua tabel lain
-- `rapat` → `absensi_rapat`, `notulen_rapat`
-- `users` (role: konselor) → `konseling`, `daftar_konseling`
-
-### **Enhanced Relationships:**
-- `users` → `biodata_pengurus` (One-to-One)
-- `users` → `file_uploads` (One-to-Many)
-- `users` → `activity_logs` (One-to-Many)
-- `kegiatan` → `users` (penanggung jawab)
-- `konseling` → `users` (peserta dan konselor)
+| Field                 | Tipe Data        | Keterangan                                                                 |
+|-----------------------|------------------|----------------------------------------------------------------------------|
+| `id`                  | INT (PK, AI)     | ID unik kegiatan                                                           |
+| `tanggal`             | DATE             | Tanggal kegiatan                                                           |
+| `nama_kegiatan`       | VARCHAR(255)     | Nama kegiatan                                                              |
+| `sasaran`             | TEXT             | Sasaran kegiatan                                                           |
+| `lokasi`              | TEXT             | Lokasi kegiatan                                                            |
+| `hasil_dicapai`       | TEXT             | Hasil yang dicapai                                                         |
+| `status`              | ENUM             | ('direncanakan', 'berlangsung', 'selesai', 'batal') (default: 'direncanakan') |
+| `penanggung_jawab_id` | INT              | ID penanggung jawab (FK ke users)                                          |
+| `jumlah_peserta`      | INT              | Jumlah peserta (default: 0)                                                |
+| `budget`              | DECIMAL(15,2)    | Anggaran yang digunakan                                                    |
+| `evaluasi`            | TEXT             | Evaluasi kegiatan                                                          |
+| `foto_kegiatan`       | JSON             | Daftar path foto kegiatan (array)                                          |
+| `keterangan`          | TEXT             | Keterangan tambahan                                                        |
+| `created_at`          | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`          | DATETIME         | Waktu update terakhir                                                      |
 
 ---
 
-## 🔧 **FITUR TAMBAHAN YANG DIIMPLEMENTASI:**
+## 📁 **10. TABEL `buku_tamu` (Buku Tamu)**
 
-1. **Soft Delete** - Field `deleted_at` untuk data penting
-2. **Activity Logging** - Track semua perubahan data
-3. **File Management** - Sistem upload file terpusat
-4. **Status Tracking** - Status untuk rapat, kegiatan, konseling
-5. **Data Validation** - Constraint dan check untuk integritas data
-6. **Performance Optimization** - Index untuk query yang sering digunakan
-7. **Audit Trail** - Timestamp di semua tabel penting
+| Field               | Tipe Data        | Keterangan                                                                 |
+|---------------------|------------------|----------------------------------------------------------------------------|
+| `id`                | INT (PK, AI)     | ID unik tamu                                                               |
+| `tanggal`           | DATE             | Tanggal kunjungan                                                          |
+| `nama`              | VARCHAR(100)     | Nama tamu                                                                  |
+| `jabatan`           | VARCHAR(100)     | Jabatan tamu                                                               |
+| `instansi`          | VARCHAR(255)     | Asal instansi                                                              |
+| `email`             | VARCHAR(100)     | Email tamu                                                                 |
+| `telepon`           | VARCHAR(20)      | Nomor telepon tamu                                                         |
+| `tujuan`            | TEXT             | Tujuan kunjungan                                                           |
+| `ttd_path`          | TEXT             | Path tanda tangan digital                                                  |
+| `waktu_kunjungan`   | TIME             | Waktu mulai kunjungan                                                      |
+| `waktu_selesai`     | TIME             | Waktu selesai kunjungan                                                    |
+| `status`            | ENUM             | ('menunggu', 'dilayani', 'selesai') (default: 'menunggu')                  |
+| `dilayani_oleh`     | INT              | ID petugas yang melayani (FK ke users)                                     |
+| `created_at`        | DATETIME         | Waktu pembuatan data (default: CURRENT_TIMESTAMP)                          |
+
+---
+
+## 📁 **11. TABEL `konseling` (Sesi Konseling)**
+
+| Field                 | Tipe Data        | Keterangan                                                                 |
+|-----------------------|------------------|----------------------------------------------------------------------------|
+| `id`                  | INT (PK, AI)     | ID unik sesi konseling                                                     |
+| `tanggal`             | DATE             | Tanggal konseling                                                          |
+| `waktu_mulai`         | TIME             | Waktu mulai konseling                                                      |
+| `waktu_selesai`       | TIME             | Waktu selesai konseling                                                    |
+| `tema`                | TEXT             | Tema konseling                                                             |
+| `konselor_id`         | INT              | ID konselor (FK ke users)                                                  |
+| `peserta_id`          | INT              | ID peserta (FK ke users) - untuk individual                                |
+| `jenis`               | ENUM             | ('individual', 'kelompok', 'online', 'offline') (default: 'individual')    |
+| `status`              | ENUM             | ('terjadwal', 'berlangsung', 'selesai', 'batal') (default: 'terjadwal')    |
+| `metode`              | ENUM             | ('tatap_muka', 'video_call', 'telepon', 'chat') (default: 'tatap_muka')    |
+| `lokasi`              | TEXT             | Tempat/link konseling                                                      |
+| `jumlah_peserta`      | INT              | Jumlah peserta (khusus kelompok) (default: 1)                              |
+| `catatan`             | TEXT             | Catatan konseling                                                          |
+| `follow_up_required`  | BOOLEAN          | Perlu tindak lanjut? (default: FALSE)                                      |
+| `follow_up_date`      | DATE             | Tanggal follow-up jika diperlukan                                          |
+| `rating`              | INT              | Rating kepuasan (1-5)                                                      |
+| `feedback`            | TEXT             | Umpan balik peserta                                                        |
+| `created_at`          | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`          | DATETIME         | Waktu update terakhir                                                      |
+
+---
+
+## 📁 **12. TABEL `daftar_konseling` (Pendaftaran Konseling)**
+
+| Field                 | Tipe Data        | Keterangan                                                                 |
+|-----------------------|------------------|----------------------------------------------------------------------------|
+| `id`                  | INT (PK, AI)     | ID unik pendaftaran                                                        |
+| `tanggal_daftar`      | DATE             | Tanggal pendaftaran                                                        |
+| `tanggal_konseling`   | DATE             | Tanggal konseling yang diinginkan                                          |
+| `waktu_konseling`     | TIME             | Waktu konseling yang diinginkan                                            |
+| `konselor_id`         | INT              | ID konselor yang dituju (FK ke users)                                      |
+| `pendaftar_id`        | INT              | ID pendaftar (FK ke users) - jika sudah punya akun                         |
+| `nama_pendaftar`      | VARCHAR(100)     | Nama pendaftar (jika tidak punya akun)                                     |
+| `kontak_pendaftar`    | VARCHAR(100)     | Kontak pendaftar (email/telp)                                              |
+| `jenis_konseling`     | ENUM             | ('online', 'offline')                                                      |
+| `topik_konseling`     | TEXT             | Topik yang ingin dikonsultasikan                                           |
+| `lokasi`              | TEXT             | Lokasi yang diinginkan                                                     |
+| `status`              | ENUM             | ('pending', 'disetujui', 'ditolak', 'selesai', 'batal') (default: 'pending')|
+| `prioritas`           | ENUM             | ('rendah', 'normal', 'tinggi', 'urgent') (default: 'normal')               |
+| `alasan_penolakan`    | TEXT             | Alasan jika ditolak                                                        |
+| `keterangan`          | TEXT             | Keterangan tambahan                                                        |
+| `created_at`          | DATETIME         | Waktu pembuatan data                                                       |
+| `updated_at`          | DATETIME         | Waktu update terakhir                                                      |
+
+---
+
+## 📁 **13. TABEL `file_uploads` (Upload File)**
+
+| Field                   | Tipe Data        | Keterangan                                                                 |
+|-------------------------|------------------|----------------------------------------------------------------------------|
+| `id`                    | INT (PK, AI)     | ID unik file                                                               |
+| `filename`              | VARCHAR(255)     | Nama file di sistem                                                        |
+| `original_name`         | VARCHAR(255)     | Nama asli file                                                             |
+| `file_path`             | TEXT             | Path file                                                                  |
+| `file_size`             | INT              | Ukuran file (byte)                                                         |
+| `mime_type`             | VARCHAR(100)     | Tipe MIME file                                                             |
+| `category`              | ENUM             | ('document', 'image', 'video', 'audio', 'other') (default: 'document')     |
+| `uploaded_by`           | INT              | ID pengunggah (FK ke users)                                                |
+| `is_public`             | BOOLEAN          | Apakah file publik? (default: FALSE)                                       |
+| `download_count`        | INT              | Jumlah download (default: 0)                                               |
+| `virus_scan_status`     | ENUM             | ('pending', 'clean', 'infected', 'error') (default: 'pending')             |
+| `uploaded_at`           | DATETIME         | Waktu upload (default: CURRENT_TIMESTAMP)                                  |
+
+---
+
+## 📁 **14. TABEL `activity_logs` (Log Aktivitas - Enhanced)**
+
+| Field           | Tipe Data        | Keterangan                                                                 |
+|-----------------|------------------|----------------------------------------------------------------------------|
+| `id`            | INT (PK, AI)     | ID unik log                                                                |
+| `user_id`       | INT              | ID pengguna terkait (FK ke users)                                          |
+| `session_id`    | VARCHAR(128)     | ID sesi terkait (FK ke user_sessions)                                      |
+| `action`        | VARCHAR(100)     | Aksi yang dilakukan (e.g., INSERT, UPDATE, LOGIN)                          |
+| `table_name`    | VARCHAR(50)      | Nama tabel terkait                                                         |
+| `record_id`     | INT              | ID record yang dimodifikasi                                                |
+| `old_values`    | JSON             | Nilai lama (dalam JSON)                                                    |
+| `new_values`    | JSON             | Nilai baru (dalam JSON)                                                    |
+| `description`   | TEXT             | Deskripsi aktivitas                                                        |
+| `severity`      | ENUM             | ('low', 'medium', 'high', 'critical') (default: 'low')                     |
+| `ip_address`    | VARCHAR(45)      | Alamat IP                                                                  |
+| `user_agent`    | TEXT             | User agent browser/perangkat                                               |
+| `created_at`    | DATETIME         | Waktu log (default: CURRENT_TIMESTAMP)                                     |
+
+*Tabel ini dipartisi berdasarkan tahun `created_at`*
+
+---
+
+## 📁 **15. TABEL `data_versions` (Versi Data)**
+
+| Field             | Tipe Data        | Keterangan                                                                 |
+|-------------------|------------------|----------------------------------------------------------------------------|
+| `id`              | INT (PK, AI)     | ID unik versi                                                              |
+| `table_name`      | VARCHAR(50)      | Nama tabel asal data                                                       |
+| `record_id`       | INT              | ID record asal                                                             |
+| `version_number`  | INT              | Nomor versi (dimulai dari 1)                                               |
+| `version_data`    | JSON             | Data versi (dalam JSON)                                                    |
+| `created_at`      | DATETIME         | Waktu pembuatan versi (default: CURRENT_TIMESTAMP)                         |
+| `created_by`      | INT              | ID pembuat versi (FK ke users)                                             |
+| `comment`         | TEXT             | Komentar perubahan                                                         |
+
+---
+
+## 📁 **16. TABEL `query_performance` (Kinerja Query)**
+
+| Field             | Tipe Data        | Keterangan                                                                 |
+|-------------------|------------------|----------------------------------------------------------------------------|
+| `id`              | INT (PK, AI)     | ID unik log query                                                          |
+| `query_hash`      | VARCHAR(64)      | Hash dari query                                                            |
+| `query_type`      | ENUM             | ('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'OTHER')                          |
+| `execution_time`  | DECIMAL(10,6)    | Waktu eksekusi (dalam detik)                                               |
+| `rows_affected`   | INT              | Jumlah baris yang terpengaruh                                              |
+| `database_name`   | VARCHAR(64)      | Nama database                                                              |
+| `table_names`     | TEXT             | Nama tabel yang terlibat                                                   |
+| `user_id`         | INT              | ID pengguna (jika ada) (FK ke users)                                       |
+| `created_at`      | DATETIME         | Waktu log (default: CURRENT_TIMESTAMP)                                     |
+
+---
+
+## 🧠 FITUR TAMBAHAN
+
+1. **View Dashboard Statistik**: Menyediakan statistik ringkas untuk dashboard.
+2. **View Pengurus Lengkap**: Menampilkan data pengurus beserta statistik kegiatan.
+3. **View Statistik Konseling**: Analisis bulanan konseling.
+4. **View Performance Summary**: Ringkasan kinerja query.
+5. **Trigger untuk Keamanan dan Audit**: 
+   - `tr_users_insert`, `tr_users_update`: Audit perubahan user.
+   - `tr_users_password_policy`: Penegakan kebijakan password.
+   - `tr_program_kerja_versioning`: Versioning untuk program kerja.
+   - `tr_session_cleanup`: Membersihkan sesi yang kadaluarsa.
+6. **Stored Procedures**:
+   - `sp_dashboard_stats_enhanced`: Statistik dashboard + aktivitas terkini.
+   - `sp_handle_failed_login`, `sp_handle_successful_login`: Manajemen login.
+   - `sp_comprehensive_cleanup`: Pembersihan menyeluruh.
+   - `sp_advanced_monthly_report`: Laporan bulanan lengkap.
+   - `sp_security_audit`: Audit keamanan.
+   - `sp_performance_optimization`: Analisis kinerja.
+   - `sp_data_integrity_check`: Pemeriksaan integritas data.
+7. **Indeks Lanjutan**: 
+   - Indeks komposit untuk query kompleks.
+   - Full-text search untuk pencarian teks.
+   - Covering index untuk akses cepat.
+8. **Event Terjadwal**:
+   - `ev_daily_cleanup`: Pembersihan harian.
+   - `ev_weekly_cleanup`: Pembersihan mingguan (panggil sp_comprehensive_cleanup).
+   - `ev_monthly_analysis`: Analisis kinerja bulanan.
+9. **Konfigurasi Keamanan Pengguna Database** (dalam komentar):
+   - Pengguna aplikasi (`pikr_app`).
+   - Pengguna backup (`pikr_backup`).
+   - Pengguna analitik (`pikr_analytics`).
+
+---
+
+## 🚀 CARA MENGGUNAKAN
+
+### 📋 LANGKAH-LANGKAH:
+
+1. **Persiapan Awal**:
+   - Pastikan MySQL/MariaDB versi terbaru terinstall.
+   - Atur `event_scheduler = ON` di konfigurasi MySQL.
+   - Buat database baru (misal: `pikr_synergy`).
+
+2. **Eksekusi Skrip**:
+   - Jalankan seluruh perintah SQL dalam file `database.sql` di database yang telah dibuat.
+   - Contoh: `mysql -u root -p pikr_synergy < database.sql`
+
+3. **Konfigurasi Keamanan**:
+   - **HARAP** ganti password default untuk user database (`pikr_app`, `pikr_backup`, `pikr_analytics`) yang ada di bagian komentar.
+   - Aktifkan SSL/TLS untuk koneksi database.
+
+4. **Integrasi dengan Aplikasi**:
+   - Aplikasi backend harus menggunakan kredensial user `pikr_app` (atau sesuai) untuk mengakses database.
+   - Pastikan aplikasi menangani session management dengan baik (sesuai tabel `user_sessions`).
+
+5. **Pemeliharaan Rutin**:
+   - Event terjadwal akan berjalan otomatis untuk pembersihan dan analisis.
+   - Gunakan prosedur `sp_security_audit` dan `sp_data_integrity_check` secara berkala.
+   - Pantau tabel `query_performance` untuk optimisasi.
+
+### 🛠️ TESTING:
+
+- Gunakan query testing yang disediakan di bagian akhir file untuk memastikan semua fitur berjalan.
+- Contoh:
+  ```sql
+  CALL sp_dashboard_stats_enhanced();
+  CALL sp_advanced_monthly_report(2025, 6);
+  SELECT * FROM view_dashboard_stats;
+  ```
+
+### 📝 DOKUMENTASI:
+
+- File ini sudah dilengkapi dokumentasi internal yang lengkap di dalam komentar.
+- Dokumentasi mencakup:
+  - Penjelasan tabel, view, trigger, stored procedure.
+  - Panduan deployment dan maintenance.
+  - Contoh query dan penggunaan.
+
+### ⚠️ PENTING:
+
+- **BACKUP** database secara rutin.
+- Lakukan **PENGETESAN** menyeluruh sebelum deploy ke produksi.
+- Sesuaikan konfigurasi (seperti path file) sesuai lingkungan server.
+```
+
+### Cara Menggunakan Database:
+1. **Persiapan**:
+   - Install MySQL/MariaDB versi terbaru
+   - Buat database baru: `CREATE DATABASE pikr_synergy;`
+
+2. **Eksekusi Skrip**:
+   ```bash
+   mysql -u [username] -p pikr_synergy < database.sql
+   ```
+   Masukkan password saat diminta
+
+3. **Konfigurasi Keamanan**:
+   - Buka bagian komentar di akhir skrip (mulai dari `/*`)
+   - Jalankan perintah `GRANT` secara manual untuk user database
+
+4. **Integrasi Aplikasi**:
+   ```javascript
+   // Contoh koneksi Node.js
+   const mysql = require('mysql2');
+   const pool = mysql.createPool({
+     host: 'localhost',
+     user: 'pikr_app',
+     password: 'YourStrongPasswordHere2025!',
+     database: 'pikr_synergy'
+   });
+   ```
+
+5. **Pemeliharaan Rutin**:
+   - Pantau event scheduler: `SHOW EVENTS;`
+   - Jalankan prosedur manual:
+     ```sql
+     CALL sp_comprehensive_cleanup();
+     CALL sp_security_audit();
+     ```
+
+6. **Testing**:
+   ```sql
+   -- Cek statistik dashboard
+   SELECT * FROM view_dashboard_stats;
+   
+   -- Cari kegiatan dengan fulltext search
+   SELECT * FROM kegiatan 
+   WHERE MATCH(nama_kegiatan, sasaran) AGAINST('remaja sekolah');
+   ```
+
+7. **Optimisasi**:
+   - Pantau slow query: `SELECT * FROM query_performance ORDER BY execution_time DESC LIMIT 10;`
+   - Gunakan `EXPLAIN` untuk query kompleks
+
+**Catatan Penting**:
+- Backup database minimal 1x/hari
+- Lakukan `OPTIMIZE TABLE` bulanan untuk tabel besar
+- Monitor partisi tabel `activity_logs` setiap tahun
