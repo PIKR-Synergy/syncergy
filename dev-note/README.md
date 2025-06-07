@@ -14,8 +14,8 @@ Selamat datang di **PIK-R Synergy** versi 3.0! Dokumen ini ditujukan untuk devel
 6. [API Endpoints](#api-endpoints)
 7. [Migrasi & Setup Database](#migrasi--setup-database)
 8. [Trigger, Stored Procedures, & Event Scheduler](#trigger-stored-procedures--event-scheduler)
-9. [Development & Contributing](#development--contributing)
-10. [License](#license)
+9. [Komunikasi Frontend–Backend](#komunikasi-frontend--backend)
+10. [Development & Contributing](#development--contributing)
 
 ---
 
@@ -46,12 +46,15 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 
 ## Arsitektur & Teknologi
 
-* **Backend**: Node.js / Python / PHP (pilih sesuai implementasi) dengan RESTful API
+* **Backend**: PHP + Laravel 10
+* **Desain Arsitektur**: MVC (Model-View-Controller)
+* **ORM**: Eloquent ORM
 * **Database**: MySQL 8.x
-* **ORM**: Sequalize / SQLAlchemy / Doctrine (opsional)
-* **Frontend**: React / Vue / Angular
+* **Frontend**: React / Vue / Angular (terpisah via API)
+* **Cache & Queue (opsional)**: Redis, Laravel Queue, Horizon
+* **Scheduler**: Laravel Schedule (menggantikan MySQL event scheduler jika diinginkan)
 * **Diagram**: Mermaid.js untuk dokumentasi flowchart
-
+  
 ## Database Schema
 
 Semua skema terdapat di `database.sql`:
@@ -229,6 +232,7 @@ flowchart LR
     end
 ```
 
+
 ## API Endpoints
 
 Contoh REST API:
@@ -277,6 +281,34 @@ Contoh REST API:
 * **Events**: `ev_daily_cleanup`, `ev_weekly_cleanup`, `ev_monthly_analysis`
 
 Dokumentasi detail ada di `docs/db_procedures.md`.
+
+## Komunikasi Frontend–Backend
+
+Aplikasi menggunakan arsitektur **separated frontend & backend** berbasis **REST API**. Pola komunikasi yang diterapkan:
+
+* **Frontend** (React / Vue / Angular) melakukan request ke endpoint Laravel menggunakan HTTP:
+
+  * `GET`, `POST`, `PUT`, `DELETE`
+  * Format data: `JSON`
+  * Token otentikasi (misalnya JWT) dikirim via header: `Authorization: Bearer <token>`
+
+* **Laravel** menggunakan **route groups** dan **middleware** seperti:
+
+  * `auth:sanctum` untuk endpoint terproteksi
+  * `throttle:api` untuk rate limiting
+  * `log.activity` (custom middleware) untuk mencatat `activity_logs`
+
+* **Respons standar JSON** akan memiliki struktur:
+
+  ```json
+  {
+    "success": true,
+    "data": {...},
+    "message": "Operasi berhasil"
+  }
+  ```
+
+* **Error handling** menggunakan Laravel `Exception Handler` untuk return 4xx/5xx sesuai standar REST
 
 ## Development & Contributing
 
