@@ -1,3 +1,69 @@
+# PIK-R Synergy - Developer README
+
+Selamat datang di **PIK-R Synergy** versi 3.0! Dokumen ini ditujukan untuk developer yang akan mengembangkan, memelihara, dan mengintegrasikan sistem PIK-R Synergy.
+
+---
+
+## 📚 Table of Contents
+
+1. [Overview](#overview)
+2. [Fitur Utama](#fitur-utama)
+3. [Arsitektur & Teknologi](#arsitektur--teknologi)
+4. [Database Schema](#database-schema)
+5. [Workflow Aplikasi](#workflow-aplikasi)
+6. [API Endpoints](#api-endpoints)
+7. [Migrasi & Setup Database](#migrasi--setup-database)
+8. [Trigger, Stored Procedures, & Event Scheduler](#trigger-stored-procedures--event-scheduler)
+9. [Development & Contributing](#development--contributing)
+10. [License](#license)
+
+---
+
+## Overview
+
+PIK-R Synergy adalah sistem informasi manajemen PIK-R (Pusat Informasi Konseling Remaja) yang komprehensif, menyediakan modul:
+
+* **Manajemen Pengguna**
+* **Profil Pengurus**
+* **Rapat & Notulen**
+* **Konseling**
+* **Program Kerja & Kegiatan**
+* **Buku Tamu & File Uploads**
+* **Laporan & Audit**
+* **Monitoring & Performance**
+
+Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanfaatkan MySQL sebagai basis data.
+
+## Fitur Utama
+
+* Otentikasi & authorization berbasis role (admin, pengurus, konselor, tamu)
+* Session management dan kebijakan password (expired, lock)
+* Audit log & data versioning
+* Stored procedures untuk reporting, security audit, dan maintenance
+* Event scheduler untuk cleanup harian, mingguan, dan bulanan
+* Full-text search dan indexing optimasi
+* Modular dan scalable
+
+## Arsitektur & Teknologi
+
+* **Backend**: Node.js / Python / PHP (pilih sesuai implementasi) dengan RESTful API
+* **Database**: MySQL 8.x
+* **ORM**: Sequalize / SQLAlchemy / Doctrine (opsional)
+* **Frontend**: React / Vue / Angular
+* **Diagram**: Mermaid.js untuk dokumentasi flowchart
+
+## Database Schema
+
+Semua skema terdapat di `database.sql`:
+
+* Tabel utama: `users`, `user_sessions`, `biodata_pengurus`, `rapat`, `absensi_rapat`, `notulen_rapat`, `program_kerja`, `kegiatan`, `buku_tamu`, `file_uploads`, `daftar_konseling`, `konseling`, dll.
+* Audit & performance: `activity_logs`, `query_performance`, `data_versions`
+* Views: `view_dashboard_stats`, `view_pengurus_lengkap`, `view_statistik_konseling`, `view_performance_summary`
+
+## Workflow Aplikasi
+
+Berikut workflow aplikasi
+
 ```mermaid
 flowchart LR
     %% ================= AUTHENTICATION & NAVIGATION =================
@@ -162,3 +228,62 @@ flowchart LR
       API_Perf --> L6[Grafik & Tabel Performa]
     end
 ```
+
+**Lihat detail workflow** di `docs/workflow_app.mmd`.
+
+## API Endpoints
+
+Contoh REST API:
+
+| Modul            | Method | Endpoint                           | Deskripsi             |
+| ---------------- | ------ | ---------------------------------- | --------------------- |
+| Authentication   | POST   | `/api/auth/login`                  | Login user            |
+|                  | POST   | `/api/auth/register`               | Registrasi user       |
+| Users Management | GET    | `/api/users`                       | List semua user       |
+|                  | POST   | `/api/users`                       | Buat user baru        |
+|                  | PUT    | `/api/users/:id`                   | Update user           |
+| Rapat            | GET    | `/api/rapat`                       | List rapat            |
+|                  | POST   | `/api/rapat`                       | Buat rapat baru       |
+| Absensi Rapat    | POST   | `/api/rapat/:id/absensi`           | Absen rapat           |
+| Notulen Rapat    | POST   | `/api/notulen`                     | Tambah notulen        |
+| Konseling        | POST   | `/api/daftar-konseling`            | Pendaftaran konseling |
+|                  | GET    | `/api/konseling`                   | List sesi konseling   |
+| Program Kerja    | GET    | `/api/program-kerja`               | List program          |
+|                  | POST   | `/api/program-kerja`               | Buat program          |
+| Kegiatan         | GET    | `/api/kegiatan`                    | List kegiatan         |
+|                  | POST   | `/api/kegiatan`                    | Buat kegiatan         |
+| Buku Tamu        | GET    | `/api/buku-tamu`                   | List tamu             |
+|                  | POST   | `/api/buku-tamu`                   | Tambah tamu           |
+| File Uploads     | GET    | `/api/file-uploads`                | List file             |
+|                  | POST   | `/api/file-uploads`                | Upload file           |
+| Reports & Audit  | GET    | `/api/report/monthly?year=&month=` | Laporan bulanan       |
+|                  | GET    | `/api/security-audit`              | Audit keamanan        |
+|                  | GET    | `/api/performance`                 | Statistik performa DB |
+
+## Migrasi & Setup Database
+
+1. Install MySQL 8.x
+2. Buat database: `CREATE DATABASE pikr_synergy;`
+3. Import schema:
+
+   ```bash
+   mysql -u user -p pikr_synergy < database.sql
+   ```
+4. Atur event scheduler: `SET GLOBAL event_scheduler = ON;`
+5. (Opsional) Buat user DB terbatas di `database.sql` section `-- SECURITY CONFIGURATION`
+
+## Trigger, Stored Procedures, & Event Scheduler
+
+* **Triggers**: `tr_users_insert`, `tr_users_update`, `tr_program_kerja_versioning`, dll.
+* **Stored Procedures**: `sp_dashboard_stats_enhanced`, `sp_advanced_monthly_report`, `sp_security_audit`, `sp_data_integrity_check`, dll.
+* **Events**: `ev_daily_cleanup`, `ev_weekly_cleanup`, `ev_monthly_analysis`
+
+Dokumentasi detail ada di `docs/db_procedures.md`.
+
+## Development & Contributing
+
+* Fork repository ini
+* Buat branch fitur: `feature/<nama_fitur>`
+* Commit & push perubahan
+* Buka Pull Request dengan deskripsi lengkap
+* Ikuti coding standards dan test coverage minimal 80%
