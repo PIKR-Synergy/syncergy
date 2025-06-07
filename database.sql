@@ -2,7 +2,7 @@
 -- DATABASE PIK-R SYNERGY - ENHANCED VERSION
 -- Versi: 3.0 (Enhanced with Security & Performance Optimizations)
 -- Tanggal: Juni 2025
--- Author: Enhanced based on recommendations
+-- Author: Elam
 -- ===================================================================
 
 -- DROP TABLES IF EXIST (for clean setup)
