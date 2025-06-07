@@ -1,4 +1,80 @@
+
 # KESIMPULAN DATABASE PIK-R SYNERGY (ENHANCED VERSION 3.0)
+
+## Workflow
+```mermaid
+flowchart TD
+
+%% === USER AUTHENTICATION ===
+A1[Mulai] --> A2[Login / Register]
+A2 -->|Login Berhasil| A3[Create Session]
+A2 -->|Login Gagal| A4[sp_handle_failed_login]
+A3 --> A5{Password Expired?}
+A5 -- Ya --> A6[Tolak Akses]
+A5 -- Tidak --> A7[Dashboard Utama]
+
+%% === DASHBOARD DAN MONITORING ===
+A7 --> B1[View: view_dashboard_stats]
+A7 --> B2[Monitoring Konseling, Kegiatan, Rapat]
+A7 --> B3[Recent Activity Logs]
+
+%% === MODUL PENGGUNA ===
+A7 --> C1[Manajemen User]
+C1 --> C2[users]
+C2 --> C3[Insert / Update -> Trigger: tr_users_insert / update]
+C3 --> C4[Log ke activity_logs]
+
+%% === MODUL PENGURUS ===
+A7 --> D1[Pengurus & Profil]
+D1 --> D2[biodata_pengurus]
+D2 --> D3[View: view_pengurus_lengkap]
+
+%% === MODUL RAPAT ===
+A7 --> E1[Rapat]
+E1 --> E2[rapat]
+E2 --> E3[absensi_rapat]
+E2 --> E4[notulen_rapat]
+
+%% === MODUL KONSELING ===
+A7 --> F1[Konseling]
+F1 --> F2[daftar_konseling]
+F1 --> F3[konseling]
+F3 --> F4[View: view_statistik_konseling]
+
+%% === MODUL PROGRAM & KEGIATAN ===
+A7 --> G1[Program Kerja]
+G1 --> G2[program_kerja]
+G2 --> G3[Trigger: tr_program_kerja_versioning]
+G3 --> G4[data_versions]
+
+A7 --> G5[Kegiatan]
+G5 --> G6[kegiatan]
+
+%% === MODUL TAMU & FILE ===
+A7 --> H1[Buku Tamu]
+H1 --> H2[buku_tamu]
+A7 --> H3[File Uploads]
+H3 --> H4[file_uploads]
+
+%% === AUDIT & MONITORING ===
+A7 --> I1[Audit Log & Versioning]
+I1 --> I2[activity_logs]
+I1 --> I3[data_versions]
+I1 --> I4[View: view_performance_summary]
+I1 --> I5[query_performance]
+
+%% === STORED PROCEDURE & EVENTS ===
+A7 --> J1[Stored Procedures]
+J1 --> J2[sp_dashboard_stats_enhanced]
+J1 --> J3[sp_advanced_monthly_report]
+J1 --> J4[sp_security_audit]
+J1 --> J5[sp_data_integrity_check]
+
+A7 --> K1[Event Scheduler]
+K1 --> K2[ev_daily_cleanup]
+K1 --> K3[ev_weekly_cleanup]
+K1 --> K4[ev_monthly_analysis]
+```
 
 ## 📁 **1. TABEL `users` (Pengguna Sistem)**
 
