@@ -1,4 +1,3 @@
-
 # KESIMPULAN DATABASE PIK-R SYNERGY (ENHANCED VERSION 3.0)
 
 ## Workflow
@@ -86,7 +85,7 @@ K1 --> K4[ev_monthly_analysis]
 | `password_hash`             | VARCHAR(255)     | Password yang di-hash (bcrypt/argon2)                                      |
 | `role`                      | ENUM             | ('admin', 'pengurus', 'konselor', 'tamu')                                  |
 | `email`                     | VARCHAR(100)     | Email (UNIQUE jika diisi)                                                  |
-| `phone`                     | VARCHAR(20)      | Nomor telepon dengan validasi format                                       |
+| `phone`                     | VARCHAR(20)      | Nomor telepon                                                              |
 | `is_active`                 | BOOLEAN          | Status aktif user (default: TRUE)                                          |
 | `password_expires_at`       | DATETIME         | Tanggal kedaluwarsa password                                               |
 | `failed_login_attempts`     | INT              | Jumlah percobaan login gagal (default: 0)                                  |
@@ -107,7 +106,7 @@ K1 --> K4[ev_monthly_analysis]
 
 | Field               | Tipe Data        | Keterangan                                                                 |
 |---------------------|------------------|----------------------------------------------------------------------------|
-| `id`                | VARCHAR(128) (PK)| ID sesi (biasanya session ID)                                              |
+| `id`                | VARCHAR(128) (PK)| ID sesi (session ID)                                                       |
 | `user_id`           | INT              | ID pengguna (FK ke users)                                                  |
 | `ip_address`        | VARCHAR(45)      | Alamat IP pengguna saat login                                              |
 | `user_agent`        | TEXT             | User agent browser/perangkat                                               |
@@ -288,11 +287,11 @@ K1 --> K4[ev_monthly_analysis]
 | `status`              | ENUM             | ('terjadwal', 'berlangsung', 'selesai', 'batal') (default: 'terjadwal')    |
 | `metode`              | ENUM             | ('tatap_muka', 'video_call', 'telepon', 'chat') (default: 'tatap_muka')    |
 | `lokasi`              | TEXT             | Tempat/link konseling                                                      |
-| `jumlah_peserta`      | INT              | Jumlah peserta (khusus kelompok) (default: 1)                              |
+| `jumlah_peserta`      | INT              | Jumlah peserta (default: 1)                                                |
 | `catatan`             | TEXT             | Catatan konseling                                                          |
 | `follow_up_required`  | BOOLEAN          | Perlu tindak lanjut? (default: FALSE)                                      |
 | `follow_up_date`      | DATE             | Tanggal follow-up jika diperlukan                                          |
-| `rating`              | INT              | Rating kepuasan (1-5)                                                      |
+| `rating`              | INT              | Rating kepuasan                                                            |
 | `feedback`            | TEXT             | Umpan balik peserta                                                        |
 | `created_at`          | DATETIME         | Waktu pembuatan data                                                       |
 | `updated_at`          | DATETIME         | Waktu update terakhir                                                      |
@@ -397,56 +396,57 @@ K1 --> K4[ev_monthly_analysis]
 
 ## 🧠 FITUR TAMBAHAN
 
-1. **View Dashboard Statistik**: Menyediakan statistik ringkas untuk dashboard.
-2. **View Pengurus Lengkap**: Menampilkan data pengurus beserta statistik kegiatan.
-3. **View Statistik Konseling**: Analisis bulanan konseling.
-4. **View Performance Summary**: Ringkasan kinerja query.
-5. **Trigger untuk Keamanan dan Audit**: 
-   - `tr_users_insert`, `tr_users_update`: Audit perubahan user.
-   - `tr_users_password_policy`: Penegakan kebijakan password.
-   - `tr_program_kerja_versioning`: Versioning untuk program kerja.
-   - `tr_session_cleanup`: Membersihkan sesi yang kadaluarsa.
-6. **Stored Procedures**:
-   - `sp_dashboard_stats_enhanced`: Statistik dashboard + aktivitas terkini.
-   - `sp_handle_failed_login`, `sp_handle_successful_login`: Manajemen login.
-   - `sp_comprehensive_cleanup`: Pembersihan menyeluruh.
-   - `sp_advanced_monthly_report`: Laporan bulanan lengkap.
-   - `sp_security_audit`: Audit keamanan.
-   - `sp_performance_optimization`: Analisis kinerja.
-   - `sp_data_integrity_check`: Pemeriksaan integritas data.
-7. **Indeks Lanjutan**: 
-   - Indeks komposit untuk query kompleks.
-   - Full-text search untuk pencarian teks.
-   - Covering index untuk akses cepat.
-8. **Event Terjadwal**:
-   - `ev_daily_cleanup`: Pembersihan harian.
-   - `ev_weekly_cleanup`: Pembersihan mingguan (panggil sp_comprehensive_cleanup).
-   - `ev_monthly_analysis`: Analisis kinerja bulanan.
-9. **Konfigurasi Keamanan Pengguna Database** (dalam komentar):
-   - Pengguna aplikasi (`pikr_app`).
-   - Pengguna backup (`pikr_backup`).
-   - Pengguna analitik (`pikr_analytics`).
+1. **View Dashboard Statistik**: view_dashboard_stats, view_pengurus_lengkap, view_statistik_konseling, view_performance_summary.
+2. **Trigger Audit & Versioning**: tr_users_insert, tr_users_update, tr_users_password_policy, tr_program_kerja_versioning, tr_session_cleanup.
+3. **Stored Procedures**: sp_dashboard_stats_enhanced, sp_handle_failed_login, sp_handle_successful_login, sp_comprehensive_cleanup, sp_advanced_monthly_report, sp_security_audit, sp_performance_optimization, sp_data_integrity_check.
+4. **Indeks Lanjutan**: Indeks komposit, full-text search (InnoDB/MyISAM), covering index.
+5. **Event Terjadwal**: ev_daily_cleanup (harian, single statement), ev_weekly_cleanup (mingguan, call procedure), ev_monthly_analysis (bulanan, multi-statement pakai DELIMITER).
+6. **Konfigurasi Keamanan Pengguna Database**: pikr_app, pikr_backup, pikr_analytics (lihat bagian komentar di database.sql).
 
 ---
 
 ## 🚀 CARA MENGGUNAKAN
 
-### 📋 LANGKAH-LANGKAH:
-
-1. **Persiapan Awal**:
-   - Pastikan MySQL/MariaDB versi terbaru terinstall.
-   - Atur `event_scheduler = ON` di konfigurasi MySQL.
-   - Buat database baru (misal: `pikr_synergy`).
+1. **Persiapan**:
+   - Install MySQL/MariaDB versi terbaru.
+   - Buat database baru: `CREATE DATABASE pikr_synergy;`
+   - Aktifkan event scheduler: `SET GLOBAL event_scheduler = ON;`
 
 2. **Eksekusi Skrip**:
-   - Jalankan seluruh perintah SQL dalam file `database.sql` di database yang telah dibuat.
-   - Contoh: `mysql -u root -p pikr_synergy < database.sql`
+   ```bash
+   mysql -u [username] -p pikr_synergy < database.sql
+   ```
 
 3. **Konfigurasi Keamanan**:
-   - **HARAP** ganti password default untuk user database (`pikr_app`, `pikr_backup`, `pikr_analytics`) yang ada di bagian komentar.
-   - Aktifkan SSL/TLS untuk koneksi database.
+   - Jalankan perintah GRANT user database secara manual (lihat bagian komentar di database.sql).
 
-4. **Integrasi dengan Aplikasi**:
+4. **Integrasi Aplikasi**:
+   - Gunakan user `pikr_app` untuk koneksi aplikasi.
+   - Pastikan aplikasi menangani session management sesuai tabel `user_sessions`.
+
+5. **Pemeliharaan Rutin**:
+   - Pantau event scheduler: `SHOW EVENTS;`
+   - Jalankan prosedur manual jika perlu:
+     ```sql
+     CALL sp_comprehensive_cleanup();
+     CALL sp_security_audit();
+     ```
+
+6. **Testing**:
+   ```sql
+   SELECT * FROM view_dashboard_stats;
+   CALL sp_dashboard_stats_enhanced();
+   ```
+
+7. **Optimisasi**:
+   - Pantau slow query: `SELECT * FROM query_performance ORDER BY execution_time DESC LIMIT 10;`
+   - Gunakan `EXPLAIN` untuk query kompleks.
+
+**Catatan Penting**:
+- Backup database minimal 1x/hari.
+- Lakukan `OPTIMIZE TABLE` bulanan untuk tabel besar.
+- Event scheduler harian hanya menghapus session expired, pembersihan lain via event mingguan/bulanan.
+- Warning FULLTEXT index pada InnoDB (FTS_DOC_ID) adalah normal dan bisa diabaikan.
    - Aplikasi backend harus menggunakan kredensial user `pikr_app` (atau sesuai) untuk mengakses database.
    - Pastikan aplikasi menangani session management dengan baik (sesuai tabel `user_sessions`).
 
