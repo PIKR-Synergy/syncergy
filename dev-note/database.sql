@@ -1,5 +1,6 @@
 -- ===================================================================
 -- DATABASE PIK-R SYNERGY - ENHANCED VERSION
+-- DBMS: MySQL & MariaDB
 -- Versi: 3.0 (Enhanced with Security & Performance Optimizations)
 -- Tanggal: Juni 2025
 -- Author: Elam
