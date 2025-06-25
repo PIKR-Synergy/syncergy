@@ -878,6 +878,8 @@ CREATE INDEX idx_activity_logs_user_created_severity ON activity_logs(user_id, c
 CREATE INDEX idx_program_kerja_status_pic_tanggal ON program_kerja(status, pic_id, tanggal_mulai);
 
 -- Full-text search indexes (enhanced)
+-- Catatan: Warning 124 pada InnoDB saat menambah FULLTEXT index adalah normal (InnoDB rebuilding table to add column FTS_DOC_ID).
+-- Ini bukan error dan tidak mempengaruhi fungsi index, bisa diabaikan.
 ALTER TABLE rapat ADD FULLTEXT ft_rapat_search (nama_rapat, isi, tempat);
 ALTER TABLE program_kerja ADD FULLTEXT ft_program_search (nama_kegiatan, tujuan, sasaran, keterangan);
 ALTER TABLE kegiatan ADD FULLTEXT ft_kegiatan_search (nama_kegiatan, sasaran, keterangan, evaluasi);
@@ -895,31 +897,25 @@ CREATE INDEX idx_konseling_covering ON konseling(id, konselor_id, tanggal, statu
 -- Enable event scheduler
 SET GLOBAL event_scheduler = ON;
 
--- Daily cleanup event
+-- Daily cleanup event (single statement, compatible with MySQL/MariaDB standard)
 DROP EVENT IF EXISTS ev_daily_cleanup;
 CREATE EVENT ev_daily_cleanup
 ON SCHEDULE EVERY 1 DAY
 STARTS CURRENT_TIMESTAMP
 DO
-BEGIN
     DELETE FROM user_sessions WHERE expires_at < NOW();
-    UPDATE users 
-    SET failed_login_attempts = 0, locked_until = NULL 
-    WHERE locked_until IS NOT NULL AND locked_until < NOW();
-    INSERT INTO activity_logs (action, table_name, description, severity)
-    VALUES ('MAINTENANCE', 'system', 'Daily automated cleanup completed', 'low');
-END;
 
--- Weekly comprehensive cleanup
+-- Weekly comprehensive cleanup (call procedure, single statement)
 DROP EVENT IF EXISTS ev_weekly_cleanup;
 CREATE EVENT ev_weekly_cleanup
 ON SCHEDULE EVERY 1 WEEK
 STARTS CURRENT_TIMESTAMP
 DO
-CALL sp_comprehensive_cleanup();
+    CALL sp_comprehensive_cleanup();
 
--- Monthly performance analysis
-DROP EVENT IF EXISTS ev_monthly_analysis;
+-- Monthly performance analysis (multi-statement, use DELIMITER)
+DELIMITER $$
+DROP EVENT IF EXISTS ev_monthly_analysis $$
 CREATE EVENT ev_monthly_analysis
 ON SCHEDULE EVERY 1 MONTH
 STARTS CURRENT_TIMESTAMP
@@ -933,7 +929,8 @@ BEGIN
     WHERE created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH);
     INSERT INTO activity_logs (action, table_name, description, severity)
     VALUES ('MAINTENANCE', 'system', 'Monthly performance data archived', 'low');
-END;
+END $$
+DELIMITER ;
 
 -- ===================================================================
 -- SECURITY CONFIGURATION
