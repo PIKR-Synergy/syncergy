@@ -25,8 +25,6 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
     is_active BOOLEAN DEFAULT TRUE,
-    
-    -- Enhanced Security Fields
     password_expires_at DATETIME NULL,
     failed_login_attempts INT DEFAULT 0,
     locked_until DATETIME NULL,
@@ -36,15 +34,11 @@ CREATE TABLE users (
     email_verification_token VARCHAR(255) NULL,
     password_reset_token VARCHAR(255) NULL,
     password_reset_expires DATETIME NULL,
-    
-    -- Standard Fields
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME NULL,
-    
     -- Constraints
-    CONSTRAINT chk_phone_format CHECK (phone IS NULL OR phone REGEXP '^[0-9+\\-\\s\\(\\)]+$'),
-    CONSTRAINT chk_failed_attempts CHECK (failed_login_attempts >= 0),
+    -- Remove CHECK constraints for compatibility with MySQL <8.0
     INDEX idx_users_role (role),
     INDEX idx_users_active (is_active),
     INDEX idx_users_deleted (deleted_at),
@@ -106,8 +100,7 @@ CREATE TABLE rapat (
     reminder_sent BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (created_by) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_rapat_tanggal (tanggal_rapat),
     INDEX idx_rapat_status (status),
     INDEX idx_rapat_created_by (created_by)
@@ -154,11 +147,8 @@ CREATE TABLE program_kerja (
     keterangan TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (pic_id) REFERENCES users(user_id) ON SET NULL,
-    CONSTRAINT chk_tanggal_program CHECK (tanggal_selesai IS NULL OR tanggal_selesai >= tanggal_mulai),
-    CONSTRAINT chk_progress CHECK (progress_percentage >= 0 AND progress_percentage <= 100),
-    CONSTRAINT chk_budget CHECK (budget_used <= budget_allocated),
+    FOREIGN KEY (pic_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    -- Remove CHECK constraints for compatibility
     INDEX idx_program_status (status),
     INDEX idx_program_tanggal (tanggal_mulai, tanggal_selesai),
     INDEX idx_program_pic (pic_id)
@@ -203,10 +193,9 @@ CREATE TABLE notulen_rapat (
     approved_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
     FOREIGN KEY (rapat_id) REFERENCES rapat(id) ON DELETE CASCADE,
-    FOREIGN KEY (notulis_id) REFERENCES users(user_id) ON SET NULL,
-    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (notulis_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_notulen_tanggal (tanggal),
     INDEX idx_notulen_status (status)
 );
@@ -230,8 +219,7 @@ CREATE TABLE kegiatan (
     keterangan TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (penanggung_jawab_id) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (penanggung_jawab_id) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_kegiatan_tanggal (tanggal),
     INDEX idx_kegiatan_status (status),
     INDEX idx_kegiatan_pj (penanggung_jawab_id)
@@ -256,7 +244,7 @@ CREATE TABLE buku_tamu (
     dilayani_oleh INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (dilayani_oleh) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (dilayani_oleh) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_tamu_tanggal (tanggal),
     INDEX idx_tamu_instansi (instansi),
     INDEX idx_tamu_status (status)
@@ -281,13 +269,12 @@ CREATE TABLE konseling (
     catatan TEXT,
     follow_up_required BOOLEAN DEFAULT FALSE,
     follow_up_date DATE,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
+    rating INT,
     feedback TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
     FOREIGN KEY (konselor_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (peserta_id) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (peserta_id) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_konseling_konselor (konselor_id),
     INDEX idx_konseling_tanggal (tanggal),
     INDEX idx_konseling_status (status),
@@ -315,10 +302,9 @@ CREATE TABLE daftar_konseling (
     keterangan TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
     FOREIGN KEY (konselor_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (pendaftar_id) REFERENCES users(user_id) ON SET NULL,
-    CONSTRAINT chk_tanggal_konseling CHECK (tanggal_konseling >= tanggal_daftar),
+    FOREIGN KEY (pendaftar_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    -- Remove CHECK constraint for compatibility
     INDEX idx_daftar_konseling_tanggal (tanggal_konseling),
     INDEX idx_daftar_konseling_status (status),
     INDEX idx_daftar_konseling_prioritas (prioritas)
@@ -365,17 +351,13 @@ CREATE TABLE activity_logs (
     ip_address VARCHAR(45),
     user_agent TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON SET NULL,
-    FOREIGN KEY (session_id) REFERENCES user_sessions(id) ON SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (session_id) REFERENCES user_sessions(id) ON DELETE SET NULL,
     INDEX idx_logs_user (user_id),
     INDEX idx_logs_table (table_name),
     INDEX idx_logs_created (created_at),
     INDEX idx_logs_severity (severity)
-) PARTITION BY RANGE (YEAR(created_at)) (
-    PARTITION p2024 VALUES LESS THAN (2025),
-    PARTITION p2025 VALUES LESS THAN (2026),
-    PARTITION pmax VALUES LESS THAN MAXVALUE
+    -- Tidak ada PARTITION BY RANGE (hapus baris ini jika ada)
 );
 
 -- ===================================================================
@@ -391,7 +373,7 @@ CREATE TABLE data_versions (
     created_by INT,
     comment TEXT,
     
-    FOREIGN KEY (created_by) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE SET NULL,
     UNIQUE KEY unique_table_record_version (table_name, record_id, version_number),
     INDEX idx_versions_table (table_name),
     INDEX idx_versions_record (record_id),
@@ -412,7 +394,7 @@ CREATE TABLE query_performance (
     user_id INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     INDEX idx_query_hash (query_hash),
     INDEX idx_query_performance (execution_time),
     INDEX idx_query_created (created_at)
@@ -524,22 +506,16 @@ END//
 CREATE TRIGGER tr_users_update AFTER UPDATE ON users
 FOR EACH ROW
 BEGIN
-    DECLARE old_json JSON;
-    DECLARE new_json JSON;
-    
-    SET old_json = JSON_OBJECT('name', OLD.name, 'username', OLD.username, 'role', OLD.role, 'email', OLD.email, 'is_active', OLD.is_active);
-    SET new_json = JSON_OBJECT('name', NEW.name, 'username', NEW.username, 'role', NEW.role, 'email', NEW.email, 'is_active', NEW.is_active);
-    
     INSERT INTO activity_logs (user_id, action, table_name, record_id, old_values, new_values, description, severity)
-    VALUES (NEW.user_id, 'UPDATE', 'users', NEW.user_id, old_json, new_json, 
-            'Data user diupdate', 'low');
+    VALUES (NEW.user_id, 'UPDATE', 'users', NEW.user_id, 
+        JSON_OBJECT('name', OLD.name, 'username', OLD.username, 'role', OLD.role, 'email', OLD.email, 'is_active', OLD.is_active),
+        JSON_OBJECT('name', NEW.name, 'username', NEW.username, 'role', NEW.role, 'email', NEW.email, 'is_active', NEW.is_active),
+        'Data user diupdate', 'low');
 END//
 
--- Trigger untuk password policy enforcement
 CREATE TRIGGER tr_users_password_policy BEFORE UPDATE ON users
 FOR EACH ROW
 BEGIN
-    -- Reset failed attempts on successful password change
     IF OLD.password_hash != NEW.password_hash THEN
         SET NEW.failed_login_attempts = 0;
         SET NEW.locked_until = NULL;
@@ -547,27 +523,22 @@ BEGIN
     END IF;
 END//
 
--- Trigger untuk data versioning
 CREATE TRIGGER tr_program_kerja_versioning AFTER UPDATE ON program_kerja
 FOR EACH ROW
 BEGIN
     DECLARE version_num INT DEFAULT 1;
-    
     SELECT COALESCE(MAX(version_number), 0) + 1 INTO version_num
     FROM data_versions 
     WHERE table_name = 'program_kerja' AND record_id = NEW.id;
-    
     INSERT INTO data_versions (table_name, record_id, version_number, version_data, created_by)
     VALUES ('program_kerja', NEW.id, version_num, 
             JSON_OBJECT('nama_kegiatan', NEW.nama_kegiatan, 'tujuan', NEW.tujuan, 'status', NEW.status, 'progress_percentage', NEW.progress_percentage),
             NEW.pic_id);
 END//
 
--- Trigger untuk session cleanup
 CREATE TRIGGER tr_session_cleanup BEFORE INSERT ON user_sessions
 FOR EACH ROW
 BEGIN
-    -- Delete expired sessions for the user
     DELETE FROM user_sessions 
     WHERE user_id = NEW.user_id AND expires_at < NOW();
 END//
@@ -925,50 +896,41 @@ CREATE INDEX idx_konseling_covering ON konseling(id, konselor_id, tanggal, statu
 SET GLOBAL event_scheduler = ON;
 
 -- Daily cleanup event
-CREATE EVENT IF NOT EXISTS ev_daily_cleanup
+DROP EVENT IF EXISTS ev_daily_cleanup;
+CREATE EVENT ev_daily_cleanup
 ON SCHEDULE EVERY 1 DAY
 STARTS CURRENT_TIMESTAMP
 DO
 BEGIN
-    -- Clean expired sessions
     DELETE FROM user_sessions WHERE expires_at < NOW();
-    
-    -- Reset unlock accounts
     UPDATE users 
     SET failed_login_attempts = 0, locked_until = NULL 
     WHERE locked_until IS NOT NULL AND locked_until < NOW();
-    
-    -- Log the maintenance
     INSERT INTO activity_logs (action, table_name, description, severity)
     VALUES ('MAINTENANCE', 'system', 'Daily automated cleanup completed', 'low');
 END;
 
 -- Weekly comprehensive cleanup
-CREATE EVENT IF NOT EXISTS ev_weekly_cleanup
+DROP EVENT IF EXISTS ev_weekly_cleanup;
+CREATE EVENT ev_weekly_cleanup
 ON SCHEDULE EVERY 1 WEEK
 STARTS CURRENT_TIMESTAMP
 DO
-BEGIN
-    CALL sp_comprehensive_cleanup();
-END;
+CALL sp_comprehensive_cleanup();
 
 -- Monthly performance analysis
-CREATE EVENT IF NOT EXISTS ev_monthly_analysis
+DROP EVENT IF EXISTS ev_monthly_analysis;
+CREATE EVENT ev_monthly_analysis
 ON SCHEDULE EVERY 1 MONTH
 STARTS CURRENT_TIMESTAMP
 DO
 BEGIN
-    -- Archive old performance data
     CREATE TABLE IF NOT EXISTS query_performance_archive LIKE query_performance;
-    
     INSERT INTO query_performance_archive 
     SELECT * FROM query_performance 
     WHERE created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH);
-    
     DELETE FROM query_performance 
     WHERE created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH);
-    
-    -- Log the maintenance
     INSERT INTO activity_logs (action, table_name, description, severity)
     VALUES ('MAINTENANCE', 'system', 'Monthly performance data archived', 'low');
 END;
