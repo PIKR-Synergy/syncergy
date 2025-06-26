@@ -1,10 +1,15 @@
 -- ===================================================================
--- DATABASE PIK-R SYNERGY - ENHANCED VERSION
+-- DATABASE Syncergy
 -- DBMS: MySQL & MariaDB
 -- Versi: 3.0 (Enhanced with Security & Performance Optimizations)
 -- Tanggal: Juni 2025
 -- Author: Elam
 -- ===================================================================
+/*
+DROP DATABASE IF EXISTS Syncergy;
+CREATE DATABASE Syncergy;
+USE Syncergy;
+*/
 
 -- DROP TABLES IF EXIST (for clean setup)
 DROP TABLE IF EXISTS 
