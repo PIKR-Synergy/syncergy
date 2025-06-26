@@ -31,38 +31,68 @@ PIK-R Synergy adalah sistem informasi manajemen PIK-R (Pusat Informasi Konseling
 * **Buku Tamu & File Uploads**
 * **Laporan & Audit**
 * **Monitoring & Performance**
+* **Manajemen Sesi & Audit Trail**
+* **Data Versioning**
+* **Performance Monitoring**
 
 Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanfaatkan MySQL sebagai basis data.
 
 ## Fitur Utama
 
 * Otentikasi & authorization berbasis role (admin, pengurus, konselor, tamu)
-* Session management dan kebijakan password (expired, lock)
-* Audit log & data versioning
-* Stored procedures untuk reporting, security audit, dan maintenance
-* Event scheduler untuk cleanup harian, mingguan, dan bulanan
-* Full-text search dan indexing optimasi
-* Modular dan scalable
+* Session management (tabel `user_sessions`)
+* Kebijakan password (expired, lock, reset, expiry 90 hari)
+* Audit log & data versioning (`activity_logs`, `data_versions`)
+* Stored procedures untuk reporting, security audit, maintenance, data integrity check
+* Event scheduler untuk cleanup harian, mingguan, bulanan
+* Full-text search dan indexing optimasi (komposit, covering, fulltext)
+* Modular, scalable, dan siap untuk horizontal scaling
+* Monitoring performa query (`query_performance`)
+* Soft delete (`deleted_at` pada tabel utama)
+* Email verification & password reset
+* Data archiving & backup ready
 
 ## Arsitektur & Teknologi
 
 * **Backend**: PHP + Laravel 10
 * **Desain Arsitektur**: MVC (Model-View-Controller)
 * **ORM**: Eloquent ORM
-* **Database**: MySQL 8.x
+* **Database**: MySQL 8.x / MariaDB (support JSON, event scheduler, fulltext)
 * **Frontend**: Next.js (React + SSR / SSG, berkomunikasi dengan API Laravel)
 * **Cache & Queue (opsional)**: Redis, Laravel Queue, Horizon
-* **Scheduler**: Laravel Schedule (menggantikan MySQL event scheduler jika diinginkan)
-* **API**: API Laravel untuk berkomunikasi dengan frontend Next.js
+* **Scheduler**: Laravel Schedule (atau MySQL event scheduler)
+* **API**: RESTful API Laravel untuk frontend Next.js
 * **Diagram**: Mermaid.js untuk dokumentasi flowchart
   
 ## Database Schema
 
 Semua skema terdapat di `database.sql`:
 
-* Tabel utama: `users`, `user_sessions`, `biodata_pengurus`, `rapat`, `absensi_rapat`, `notulen_rapat`, `program_kerja`, `kegiatan`, `buku_tamu`, `file_uploads`, `daftar_konseling`, `konseling`, dll.
-* Audit & performance: `activity_logs`, `query_performance`, `data_versions`
-* Views: `view_dashboard_stats`, `view_pengurus_lengkap`, `view_statistik_konseling`, `view_performance_summary`
+**Tabel utama:**
+- `users` — Pengguna sistem (role, password policy, soft delete, email verification)
+- `user_sessions` — Manajemen sesi login (multi-device, expiry, IP, user agent)
+- `biodata_pengurus` — Biodata pengurus (relasi ke users)
+- `rapat` — Data rapat
+- `absensi_rapat` — Absensi peserta rapat
+- `notulen_rapat` — Notulen rapat
+- `program_kerja` — Program kerja (versioning, audit)
+- `kegiatan` — Kegiatan yang dilaksanakan
+- `daftar_hadir_acara` — Daftar hadir acara umum (bukan hanya rapat)
+- `buku_tamu` — Buku tamu digital
+- `file_uploads` — Upload file (dokumen, gambar, video, dsb)
+- `daftar_konseling` — Pendaftaran konseling (oleh tamu/user)
+- `konseling` — Sesi konseling (individual/kelompok, online/offline)
+
+**Audit & performance:**
+- `activity_logs` — Audit log aktivitas (JSON old/new, severity, IP, user agent)
+- `query_performance` — Monitoring performa query
+- `data_versions` — Versioning data (perubahan penting, JSON, siapa & kapan)
+
+**Views:**
+- `view_dashboard_stats` — Statistik utama dashboard
+- `view_pengurus_lengkap` — Data pengurus + statistik
+- `view_statistik_konseling` — Statistik konseling bulanan
+- `view_performance_summary` — Statistik performa query
 
 ## Workflow Aplikasi
 
@@ -236,71 +266,85 @@ flowchart LR
 
 ## API Endpoints
 
-Contoh REST API:
+Contoh REST API (lengkap, konsisten dengan skema):
 
-| Modul            | Method | Endpoint                           | Deskripsi             |
-| ---------------- | ------ | ---------------------------------- | --------------------- |
-| Authentication   | POST   | `/api/auth/login`                  | Login user            |
-|                  | POST   | `/api/auth/register`               | Registrasi user       |
-| Users Management | GET    | `/api/users`                       | List semua user       |
-|                  | POST   | `/api/users`                       | Buat user baru        |
-|                  | PUT    | `/api/users/:id`                   | Update user           |
-| Rapat            | GET    | `/api/rapat`                       | List rapat            |
-|                  | POST   | `/api/rapat`                       | Buat rapat baru       |
-| Absensi Rapat    | POST   | `/api/rapat/:id/absensi`           | Absen rapat           |
-| Notulen Rapat    | POST   | `/api/notulen`                     | Tambah notulen        |
-| Konseling        | POST   | `/api/daftar-konseling`            | Pendaftaran konseling |
-|                  | GET    | `/api/konseling`                   | List sesi konseling   |
-| Program Kerja    | GET    | `/api/program-kerja`               | List program          |
-|                  | POST   | `/api/program-kerja`               | Buat program          |
-| Kegiatan         | GET    | `/api/kegiatan`                    | List kegiatan         |
-|                  | POST   | `/api/kegiatan`                    | Buat kegiatan         |
-| Buku Tamu        | GET    | `/api/buku-tamu`                   | List tamu             |
-|                  | POST   | `/api/buku-tamu`                   | Tambah tamu           |
-| File Uploads     | GET    | `/api/file-uploads`                | List file             |
-|                  | POST   | `/api/file-uploads`                | Upload file           |
-| Reports & Audit  | GET    | `/api/report/monthly?year=&month=` | Laporan bulanan       |
-|                  | GET    | `/api/security-audit`              | Audit keamanan        |
-|                  | GET    | `/api/performance`                 | Statistik performa DB |
+| Modul                | Method | Endpoint                               | Deskripsi                     |
+|----------------------|--------|----------------------------------------|-------------------------------|
+| Authentication       | POST   | `/api/auth/login`                      | Login user                    |
+|                      | POST   | `/api/auth/register`                   | Registrasi user               |
+|                      | POST   | `/api/auth/forgot-password`            | Request reset password        |
+|                      | POST   | `/api/auth/reset-password`             | Reset password                |
+|                      | POST   | `/api/auth/verify-email`               | Verifikasi email              |
+| Users Management     | GET    | `/api/users`                           | List semua user               |
+|                      | POST   | `/api/users`                           | Buat user baru                |
+|                      | PUT    | `/api/users/:id`                       | Update user                   |
+|                      | DELETE | `/api/users/:id`                       | Hapus user (soft delete)      |
+| User Sessions        | GET    | `/api/sessions`                        | List sesi aktif user          |
+|                      | DELETE | `/api/sessions/:id`                    | Logout sesi tertentu          |
+| Rapat                | GET    | `/api/rapat`                           | List rapat                    |
+|                      | POST   | `/api/rapat`                           | Buat rapat baru               |
+| Absensi Rapat        | POST   | `/api/rapat/:id/absensi`               | Absen rapat                   |
+| Notulen Rapat        | POST   | `/api/notulen`                         | Tambah notulen                |
+| Program Kerja        | GET    | `/api/program-kerja`                   | List program                  |
+|                      | POST   | `/api/program-kerja`                   | Buat program                  |
+| Kegiatan             | GET    | `/api/kegiatan`                        | List kegiatan                 |
+|                      | POST   | `/api/kegiatan`                        | Buat kegiatan                 |
+| Daftar Hadir Acara   | GET    | `/api/daftar-hadir-acara`              | List kehadiran acara umum     |
+|                      | POST   | `/api/daftar-hadir-acara`              | Tambah kehadiran acara        |
+| Buku Tamu            | GET    | `/api/buku-tamu`                       | List tamu                     |
+|                      | POST   | `/api/buku-tamu`                       | Tambah tamu                   |
+| File Uploads         | GET    | `/api/file-uploads`                    | List file                     |
+|                      | POST   | `/api/file-uploads`                    | Upload file                   |
+| Konseling            | POST   | `/api/daftar-konseling`                | Pendaftaran konseling         |
+|                      | GET    | `/api/konseling`                       | List sesi konseling           |
+| Reports & Audit      | GET    | `/api/report/monthly?year=&month=`     | Laporan bulanan               |
+|                      | GET    | `/api/security-audit`                  | Audit keamanan                |
+|                      | GET    | `/api/performance`                     | Statistik performa DB         |
 
 ## Migrasi & Setup Database
 
-1. Install MySQL 8.x
+1. Install MySQL 8.x atau MariaDB terbaru
 2. Buat database: `CREATE DATABASE pikr_synergy;`
 3. Import schema:
-
    ```bash
    mysql -u user -p pikr_synergy < database.sql
    ```
-4. Atur event scheduler: `SET GLOBAL event_scheduler = ON;`
-5. (Opsional) Buat user DB terbatas di `database.sql` section `-- SECURITY CONFIGURATION`
+4. Aktifkan event scheduler: `SET GLOBAL event_scheduler = ON;`
+5. (Opsional) Buat user DB terbatas di bagian `-- SECURITY CONFIGURATION` pada `database.sql`
+6. Jalankan perintah GRANT secara manual untuk user aplikasi, backup, analytics (lihat komentar di akhir `database.sql`)
+
+**Tips Keamanan:**
+- Gunakan user `pikr_app` untuk aplikasi (hanya akses yang diperlukan)
+- Backup user hanya SELECT, analytics user hanya view
+- Ganti password default sebelum deploy
+- Aktifkan SSL/TLS jika memungkinkan
 
 ## Trigger, Stored Procedures, & Event Scheduler
 
-* **Triggers**: `tr_users_insert`, `tr_users_update`, `tr_program_kerja_versioning`, dll.
-* **Stored Procedures**: `sp_dashboard_stats_enhanced`, `sp_advanced_monthly_report`, `sp_security_audit`, `sp_data_integrity_check`, dll.
-* **Events**: `ev_daily_cleanup`, `ev_weekly_cleanup`, `ev_monthly_analysis`
+* **Triggers**: 
+  - `tr_users_insert`, `tr_users_update`, `tr_users_password_policy`, `tr_program_kerja_versioning`, `tr_session_cleanup`
+* **Stored Procedures**: 
+  - `sp_dashboard_stats_enhanced`, `sp_advanced_monthly_report`, `sp_security_audit`, `sp_data_integrity_check`, `sp_handle_failed_login`, `sp_handle_successful_login`, `sp_comprehensive_cleanup`, `sp_performance_optimization`
+* **Events**: 
+  - `ev_daily_cleanup`, `ev_weekly_cleanup`, `ev_monthly_analysis`
 
-Dokumentasi detail ada di `docs/db_procedures.md`.
+Dokumentasi detail ada di `docs/db_procedures.md` dan komentar internal di `database.sql`.
 
 ## Komunikasi Frontend–Backend
 
 Aplikasi menggunakan arsitektur **separated frontend & backend** berbasis **REST API**. Pola komunikasi yang diterapkan:
 
 * **Frontend** (React / Vue / Angular) melakukan request ke endpoint Laravel menggunakan HTTP:
-
   * `GET`, `POST`, `PUT`, `DELETE`
   * Format data: `JSON`
   * Token otentikasi (misalnya JWT) dikirim via header: `Authorization: Bearer <token>`
 
 * **Laravel** menggunakan **route groups** dan **middleware** seperti:
-
   * `auth:sanctum` untuk endpoint terproteksi
   * `throttle:api` untuk rate limiting
   * `log.activity` (custom middleware) untuk mencatat `activity_logs`
 
 * **Respons standar JSON** akan memiliki struktur:
-
   ```json
   {
     "success": true,
@@ -318,3 +362,17 @@ Aplikasi menggunakan arsitektur **separated frontend & backend** berbasis **REST
 * Commit & push perubahan
 * Buka Pull Request dengan deskripsi lengkap
 * Ikuti coding standards dan test coverage minimal 80%
+* Pastikan semua migrasi, trigger, procedure, dan event berjalan baik di MySQL/MariaDB
+* Lakukan testing pada endpoint API dan integrasi session, audit, versioning, serta backup
+
+---
+
+**Catatan penting:**
+- Backup database minimal 1x/hari
+- Lakukan `OPTIMIZE TABLE` bulanan untuk tabel besar
+- Monitor partisi tabel `activity_logs` setiap tahun
+- Pantau event scheduler: `SHOW EVENTS;`
+- Jalankan prosedur audit dan cleanup secara berkala
+- Selalu cek dan update dokumentasi internal pada `database.sql` untuk perubahan skema/fitur
+
+---
