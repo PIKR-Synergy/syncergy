@@ -411,10 +411,10 @@ CREATE TABLE query_performance (
 
 -- Insert sample users with enhanced security
 INSERT INTO users (name, username, password_hash, role, email, email_verified, password_expires_at) VALUES
-('Super Administrator', 'admin', '$2b$12$example_hash_here', 'admin', 'admin@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
-('Dr. Konselor Utama', 'konselor1', '$2b$12$example_hash_here', 'konselor', 'konselor@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
-('Ketua Pengurus', 'pengurus1', '$2b$12$example_hash_here', 'pengurus', 'pengurus@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
-('Sekretaris', 'sekretaris', '$2b$12$example_hash_here', 'pengurus', 'sekretaris@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY));
+('Super Administrator', 'admin', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'admin', 'admin@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Dr. Konselor Utama', 'konselor1', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'konselor', 'konselor@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Ketua Pengurus', 'pengurus1', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'pengurus', 'pengurus@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Sekretaris', 'sekretaris', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'pengurus', 'sekretaris@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY));
 
 -- Insert sample biodata
 INSERT INTO biodata_pengurus (user_id, jabatan, alamat) VALUES

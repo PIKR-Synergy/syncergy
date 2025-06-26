@@ -313,7 +313,17 @@ Contoh REST API (lengkap, konsisten dengan skema):
 5. (Opsional) Buat user DB terbatas di bagian `-- SECURITY CONFIGURATION` pada `database.sql`
 6. Jalankan perintah GRANT secara manual untuk user aplikasi, backup, analytics (lihat komentar di akhir `database.sql`)
 
+**Akun Default:**
+- User berikut sudah otomatis tersedia setelah import database:
+  - **admin** (Super Administrator)
+  - **konselor1** (Konselor Utama)
+  - **pengurus1** (Ketua Pengurus)
+  - **sekretaris** (Sekretaris)
+- **Password default untuk semua user di atas adalah:**  
+  **admin**
+
 **Tips Keamanan:**
+- Segera ganti password default setelah instalasi!
 - Gunakan user `pikr_app` untuk aplikasi (hanya akses yang diperlukan)
 - Backup user hanya SELECT, analytics user hanya view
 - Ganti password default sebelum deploy

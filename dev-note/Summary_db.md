@@ -457,6 +457,14 @@ K1 --> K4[ev_monthly_analysis]
 
 ### 🛠️ TESTING:
 
+- Setelah import database, tersedia user default berikut:
+  - **admin** (Super Administrator)
+  - **konselor1** (Konselor Utama)
+  - **pengurus1** (Ketua Pengurus)
+  - **sekretaris** (Sekretaris)
+- **Password default untuk semua user di atas adalah:**  
+  **admin**
+
 - Gunakan query testing yang disediakan di bagian akhir file untuk memastikan semua fitur berjalan.
 - Contoh:
   ```sql
