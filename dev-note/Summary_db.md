@@ -1,4 +1,4 @@
-# KESIMPULAN DATABASE PIK-R SYNERGY (ENHANCED VERSION 3.0)
+# KESIMPULAN DATABASE Syncergy (ENHANCED VERSION 3.0)
 
 ## Workflow
 ```mermaid
@@ -409,12 +409,12 @@ K1 --> K4[ev_monthly_analysis]
 
 1. **Persiapan**:
    - Install MySQL/MariaDB versi terbaru.
-   - Buat database baru: `CREATE DATABASE pikr_synergy;`
+   - Buat database baru: `CREATE DATABASE syncergy;`
    - Aktifkan event scheduler: `SET GLOBAL event_scheduler = ON;`
 
 2. **Eksekusi Skrip**:
    ```bash
-   mysql -u [username] -p pikr_synergy < database.sql
+   mysql -u [username] -p syncergy < database.sql
    ```
 
 3. **Konfigurasi Keamanan**:
@@ -483,11 +483,11 @@ K1 --> K4[ev_monthly_analysis]
 ### Cara Menggunakan Database:
 1. **Persiapan**:
    - Install MySQL/MariaDB versi terbaru
-   - Buat database baru: `CREATE DATABASE pikr_synergy;`
+   - Buat database baru: `CREATE DATABASE syncergy;`
 
 2. **Eksekusi Skrip**:
    ```bash
-   mysql -u [username] -p pikr_synergy < database.sql
+   mysql -u [username] -p syncergy < database.sql
    ```
    Masukkan password saat diminta
 
@@ -503,7 +503,7 @@ K1 --> K4[ev_monthly_analysis]
      host: 'localhost',
      user: 'pikr_app',
      password: 'YourStrongPasswordHere2025!',
-     database: 'pikr_synergy'
+     database: 'syncergy'
    });
    ```
 

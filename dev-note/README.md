@@ -1,6 +1,6 @@
 # PIK-R Synergy - Developer README
 
-Selamat datang di **PIK-R Synergy** versi 3.0! Dokumen ini ditujukan untuk developer yang akan mengembangkan, memelihara, dan mengintegrasikan sistem PIK-R Synergy.
+Selamat datang di **Syncergy** versi 3.0! Dokumen ini ditujukan untuk developer yang akan mengembangkan, memelihara, dan mengintegrasikan sistem PIK-R syncergy.
 
 ---
 
@@ -21,7 +21,7 @@ Selamat datang di **PIK-R Synergy** versi 3.0! Dokumen ini ditujukan untuk devel
 
 ## Overview
 
-PIK-R Synergy adalah sistem informasi manajemen PIK-R (Pusat Informasi Konseling Remaja) yang komprehensif, menyediakan modul:
+Syncergy adalah sistem informasi manajemen PIK-R (Pusat Informasi Konseling Remaja) yang komprehensif, menyediakan modul:
 
 * **Manajemen Pengguna**
 * **Profil Pengurus**
@@ -304,10 +304,10 @@ Contoh REST API (lengkap, konsisten dengan skema):
 ## Migrasi & Setup Database
 
 1. Install MySQL 8.x atau MariaDB terbaru
-2. Buat database: `CREATE DATABASE pikr_synergy;`
+2. Buat database: `CREATE DATABASE syncergy;`
 3. Import schema:
    ```bash
-   mysql -u user -p pikr_synergy < database.sql
+   mysql -u user -p syncergy < database.sql
    ```
 4. Aktifkan event scheduler: `SET GLOBAL event_scheduler = ON;`
 5. (Opsional) Buat user DB terbatas di bagian `-- SECURITY CONFIGURATION` pada `database.sql`
