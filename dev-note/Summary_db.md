@@ -486,7 +486,6 @@ K1 --> K4[ev_monthly_analysis]
 - **BACKUP** database secara rutin.
 - Lakukan **PENGETESAN** menyeluruh sebelum deploy ke produksi.
 - Sesuaikan konfigurasi (seperti path file) sesuai lingkungan server.
-```
 
 ### Cara Menggunakan Database:
 1. **Persiapan**:
