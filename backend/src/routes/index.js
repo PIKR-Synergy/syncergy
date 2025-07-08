@@ -1,10 +1,13 @@
 import { Router } from 'express';
 import authRouter from './auth.js';
+import usersRouter from './users.js';
 
 const router = Router();
 
 router.use('/auth', authRouter);
-// router.use('/users', usersRouter); // next: user management
-// router.use('/dashboard', dashboardRouter); // next: dashboard
+
+import dashboardRouter from './dashboard.js';
+router.use('/users', usersRouter);
+router.use('/dashboard', dashboardRouter);
 
 export default router;
