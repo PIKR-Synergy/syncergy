@@ -539,12 +539,12 @@ BEGIN
             NEW.pic_id);
 END//
 
-CREATE TRIGGER tr_session_cleanup BEFORE INSERT ON user_sessions
-FOR EACH ROW
-BEGIN
-    DELETE FROM user_sessions 
-    WHERE user_id = NEW.user_id AND expires_at < NOW();
-END//
+-- CREATE TRIGGER tr_session_cleanup BEFORE INSERT ON user_sessions
+-- FOR EACH ROW
+-- BEGIN
+--     DELETE FROM user_sessions 
+--     WHERE user_id = NEW.user_id AND expires_at < NOW();
+-- END//
 
 DELIMITER ;
 

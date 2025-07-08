@@ -19,6 +19,7 @@ router.post('/login', async (req, res) => {
     // Generate session token (simple random string)
     const sessionId = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 jam
+    await pool.query('DELETE FROM user_sessions WHERE user_id = ? AND expires_at < NOW()', [user.user_id]);
     await pool.query('INSERT INTO user_sessions (id, user_id, ip_address, user_agent, expires_at) VALUES (?, ?, ?, ?, ?)', [
       sessionId, user.user_id, req.ip, req.headers['user-agent'] || '', expiresAt
     ]);
