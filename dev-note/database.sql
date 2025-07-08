@@ -5,11 +5,9 @@
 -- Tanggal: Juni 2025
 -- Author: Elam
 -- ===================================================================
-/*
 DROP DATABASE IF EXISTS Syncergy;
 CREATE DATABASE Syncergy;
 USE Syncergy;
-*/
 
 -- DROP TABLES IF EXIST (for clean setup)
 DROP TABLE IF EXISTS 
