@@ -6,7 +6,7 @@ flowchart TD
 
 %% === USER AUTHENTICATION & SESSION ===
 A1[Mulai] --> A2[Login / Register]
-A2 -->|Login Berhasil| A3[Create Session (user_sessions)]
+A2 -->|Login Berhasil| A3["Create Session (user_sessions)"]
 A2 -->|Login Gagal| A4[sp_handle_failed_login]
 A3 --> A5{Password Expired?}
 A5 -- Ya --> A6[Tolak Akses]
