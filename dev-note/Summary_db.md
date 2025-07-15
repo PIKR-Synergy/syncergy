@@ -108,7 +108,7 @@ erDiagram
 
     program_kerja ||--o{ data_versions : "record_id"
 
-    kegiatan ||--o{ program_kerja : "nama_kegiatan"  %% (not enforced FK, but related by name)
+    kegiatan ||--o{ program_kerja : "nama_kegiatan" 
 
     -- Other tables have no direct FK to each other except above
 ```
