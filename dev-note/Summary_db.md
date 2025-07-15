@@ -82,6 +82,244 @@ K1 --> K4[ev_monthly_analysis]
 ## Entity-Relationship Diagram (ERD)
 ```mermaid
 erDiagram
+    users {
+        INT user_id PK
+        VARCHAR name
+        VARCHAR username UNIQUE
+        VARCHAR password_hash
+        ENUM role
+        VARCHAR email UNIQUE
+        VARCHAR phone
+        BOOLEAN is_active
+        DATETIME password_expires_at
+        INT failed_login_attempts
+        DATETIME locked_until
+        DATETIME last_login_at
+        VARCHAR last_login_ip
+        BOOLEAN email_verified
+        VARCHAR email_verification_token
+        VARCHAR password_reset_token
+        DATETIME password_reset_expires
+        DATETIME created_at
+        DATETIME updated_at
+        DATETIME deleted_at
+    }
+    user_sessions {
+        VARCHAR id PK
+        INT user_id FK
+        VARCHAR ip_address
+        TEXT user_agent
+        BOOLEAN is_active
+        DATETIME created_at
+        DATETIME last_activity_at
+        DATETIME expires_at
+    }
+    biodata_pengurus {
+        INT id PK
+        INT user_id FK
+        DATE tanggal_lahir
+        VARCHAR nama_orang_tua
+        TEXT alamat
+        VARCHAR jabatan
+        TEXT foto
+        TEXT keterangan
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    rapat {
+        INT id PK
+        VARCHAR nama_rapat
+        TEXT isi
+        DATETIME tanggal_rapat
+        TEXT tempat
+        ENUM status
+        INT created_by FK
+        INT max_peserta
+        BOOLEAN reminder_sent
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    absensi_rapat {
+        INT id PK
+        INT rapat_id FK
+        INT user_id FK
+        ENUM status
+        TEXT alamat
+        TEXT ttd_path
+        DATETIME waktu_absen
+        TEXT catatan
+    }
+    program_kerja {
+        INT id PK
+        VARCHAR nama_kegiatan
+        TEXT tujuan
+        TEXT sasaran
+        TEXT mitra_kerja
+        ENUM frekuensi
+        TEXT hasil_diharapkan
+        ENUM status
+        DATE tanggal_mulai
+        DATE tanggal_selesai
+        DECIMAL progress_percentage
+        DECIMAL budget_allocated
+        DECIMAL budget_used
+        INT pic_id FK
+        TEXT keterangan
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    daftar_hadir_acara {
+        INT id PK
+        DATE tanggal
+        VARCHAR nama_acara
+        INT user_id FK
+        ENUM status
+        TEXT alamat
+        TEXT ttd_path
+        DATETIME waktu_hadir
+        TEXT catatan
+    }
+    notulen_rapat {
+        INT id PK
+        INT rapat_id FK
+        DATE tanggal
+        TIME waktu
+        TEXT tempat
+        INT jumlah_peserta
+        TEXT materi
+        TEXT isi_notulen
+        TEXT keterangan
+        INT notulis_id FK
+        ENUM status
+        INT approved_by FK
+        DATETIME approved_at
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    kegiatan {
+        INT id PK
+        DATE tanggal
+        VARCHAR nama_kegiatan
+        TEXT sasaran
+        TEXT lokasi
+        TEXT hasil_dicapai
+        ENUM status
+        INT penanggung_jawab_id FK
+        INT jumlah_peserta
+        DECIMAL budget
+        TEXT evaluasi
+        JSON foto_kegiatan
+        TEXT keterangan
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    buku_tamu {
+        INT id PK
+        DATE tanggal
+        VARCHAR nama
+        VARCHAR jabatan
+        VARCHAR instansi
+        VARCHAR email
+        VARCHAR telepon
+        TEXT tujuan
+        TEXT ttd_path
+        TIME waktu_kunjungan
+        TIME waktu_selesai
+        ENUM status
+        INT dilayani_oleh FK
+        DATETIME created_at
+    }
+    konseling {
+        INT id PK
+        DATE tanggal
+        TIME waktu_mulai
+        TIME waktu_selesai
+        TEXT tema
+        INT konselor_id FK
+        INT peserta_id FK
+        ENUM jenis
+        ENUM status
+        ENUM metode
+        TEXT lokasi
+        INT jumlah_peserta
+        TEXT catatan
+        BOOLEAN follow_up_required
+        DATE follow_up_date
+        INT rating
+        TEXT feedback
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    daftar_konseling {
+        INT id PK
+        DATE tanggal_daftar
+        DATE tanggal_konseling
+        TIME waktu_konseling
+        INT konselor_id FK
+        INT pendaftar_id FK
+        VARCHAR nama_pendaftar
+        VARCHAR kontak_pendaftar
+        ENUM jenis_konseling
+        TEXT topik_konseling
+        TEXT lokasi
+        ENUM status
+        ENUM prioritas
+        TEXT alasan_penolakan
+        TEXT keterangan
+        DATETIME created_at
+        DATETIME updated_at
+    }
+    file_uploads {
+        INT id PK
+        VARCHAR filename
+        VARCHAR original_name
+        TEXT file_path
+        INT file_size
+        VARCHAR mime_type
+        ENUM category
+        INT uploaded_by FK
+        BOOLEAN is_public
+        INT download_count
+        ENUM virus_scan_status
+        DATETIME uploaded_at
+    }
+    activity_logs {
+        INT id PK
+        INT user_id FK
+        VARCHAR session_id FK
+        VARCHAR action
+        VARCHAR table_name
+        INT record_id
+        JSON old_values
+        JSON new_values
+        TEXT description
+        ENUM severity
+        VARCHAR ip_address
+        TEXT user_agent
+        DATETIME created_at
+    }
+    data_versions {
+        INT id PK
+        VARCHAR table_name
+        INT record_id
+        INT version_number
+        JSON version_data
+        DATETIME created_at
+        INT created_by FK
+        TEXT comment
+    }
+    query_performance {
+        INT id PK
+        VARCHAR query_hash
+        ENUM query_type
+        DECIMAL execution_time
+        INT rows_affected
+        VARCHAR database_name
+        TEXT table_names
+        INT user_id FK
+        DATETIME created_at
+    }
+
     users ||--o{ user_sessions : "user_id"
     users ||--o{ biodata_pengurus : "user_id"
     users ||--o{ rapat : "created_by"
@@ -105,10 +343,6 @@ erDiagram
     rapat ||--o{ notulen_rapat : "rapat_id"
 
     user_sessions ||--o{ activity_logs : "session_id"
-
-    program_kerja ||--o{ data_versions : "record_id"
-
-    kegiatan ||--o{ program_kerja : "nama_kegiatan" 
 ```
 
 ---
