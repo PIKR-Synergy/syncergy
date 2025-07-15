@@ -24,22 +24,101 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+
 // Tambah konseling
 router.post('/', async (req, res) => {
-  const { nama, topik, tanggal, keterangan } = req.body;
+  const {
+    tanggal,
+    waktu_mulai,
+    waktu_selesai,
+    tema,
+    konselor_id,
+    peserta_id,
+    jenis,
+    status,
+    metode,
+    lokasi,
+    jumlah_peserta,
+    catatan,
+    follow_up_required,
+    follow_up_date,
+    rating,
+    feedback
+  } = req.body;
   try {
-    await pool.query('INSERT INTO konseling (nama, topik, tanggal, keterangan) VALUES (?, ?, ?, ?)', [nama, topik, tanggal, keterangan]);
+    await pool.query(
+      `INSERT INTO konseling (
+        tanggal, waktu_mulai, waktu_selesai, tema, konselor_id, peserta_id, jenis, status, metode, lokasi, jumlah_peserta, catatan, follow_up_required, follow_up_date, rating, feedback
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        tanggal,
+        waktu_mulai,
+        waktu_selesai,
+        tema,
+        konselor_id,
+        peserta_id,
+        jenis,
+        status,
+        metode,
+        lokasi,
+        jumlah_peserta,
+        catatan,
+        follow_up_required,
+        follow_up_date,
+        rating,
+        feedback
+      ]
+    );
     res.json({ message: 'Konseling berhasil ditambahkan.' });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: 'Gagal menambah konseling.' });
   }
 });
 
 // Update konseling
 router.put('/:id', async (req, res) => {
-  const { nama, topik, tanggal, keterangan } = req.body;
+  const {
+    tanggal,
+    waktu_mulai,
+    waktu_selesai,
+    tema,
+    konselor_id,
+    peserta_id,
+    jenis,
+    status,
+    metode,
+    lokasi,
+    jumlah_peserta,
+    catatan,
+    follow_up_required,
+    follow_up_date,
+    rating,
+    feedback
+  } = req.body;
   try {
-    await pool.query('UPDATE konseling SET nama=?, topik=?, tanggal=?, keterangan=? WHERE id=?', [nama, topik, tanggal, keterangan, req.params.id]);
+    await pool.query(
+      `UPDATE konseling SET tanggal=?, waktu_mulai=?, waktu_selesai=?, tema=?, konselor_id=?, peserta_id=?, jenis=?, status=?, metode=?, lokasi=?, jumlah_peserta=?, catatan=?, follow_up_required=?, follow_up_date=?, rating=?, feedback=? WHERE id=?`,
+      [
+        tanggal,
+        waktu_mulai,
+        waktu_selesai,
+        tema,
+        konselor_id,
+        peserta_id,
+        jenis,
+        status,
+        metode,
+        lokasi,
+        jumlah_peserta,
+        catatan,
+        follow_up_required,
+        follow_up_date,
+        rating,
+        feedback,
+        req.params.id
+      ]
+    );
     res.json({ message: 'Konseling berhasil diupdate.' });
   } catch (err) {
     res.status(500).json({ message: 'Gagal update konseling.' });
