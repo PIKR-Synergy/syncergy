@@ -79,6 +79,40 @@ K1 --> K3[ev_weekly_cleanup]
 K1 --> K4[ev_monthly_analysis]
 ```
 
+## Entity-Relationship Diagram (ERD)
+```mermaid
+erDiagram
+    users ||--o{ user_sessions : "user_id"
+    users ||--o{ biodata_pengurus : "user_id"
+    users ||--o{ rapat : "created_by"
+    users ||--o{ absensi_rapat : "user_id"
+    users ||--o{ program_kerja : "pic_id"
+    users ||--o{ daftar_hadir_acara : "user_id"
+    users ||--o{ notulen_rapat : "notulis_id"
+    users ||--o{ notulen_rapat : "approved_by"
+    users ||--o{ kegiatan : "penanggung_jawab_id"
+    users ||--o{ buku_tamu : "dilayani_oleh"
+    users ||--o{ konseling : "konselor_id"
+    users ||--o{ konseling : "peserta_id"
+    users ||--o{ daftar_konseling : "konselor_id"
+    users ||--o{ daftar_konseling : "pendaftar_id"
+    users ||--o{ file_uploads : "uploaded_by"
+    users ||--o{ activity_logs : "user_id"
+    users ||--o{ data_versions : "created_by"
+    users ||--o{ query_performance : "user_id"
+
+    rapat ||--o{ absensi_rapat : "rapat_id"
+    rapat ||--o{ notulen_rapat : "rapat_id"
+
+    user_sessions ||--o{ activity_logs : "session_id"
+
+    program_kerja ||--o{ data_versions : "record_id"
+
+    kegiatan ||--o{ program_kerja : "nama_kegiatan"  %% (not enforced FK, but related by name)
+
+    -- Other tables have no direct FK to each other except above
+```
+
 ---
 
 ## 📁 TABEL UTAMA
