@@ -168,7 +168,9 @@ CREATE TABLE daftar_hadir_acara (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tanggal DATE NOT NULL,
     nama_acara VARCHAR(255) NOT NULL,
-    user_id INT NOT NULL,
+    user_id INT NULL, -- opsional, bisa NULL jika tamu
+    nik VARCHAR(20), -- NIK peserta (untuk tamu/non-user)
+    nama_peserta VARCHAR(100), -- Nama peserta (untuk tamu/non-user)
     status ENUM('hadir', 'tidak_hadir', 'izin') DEFAULT 'tidak_hadir',
     alamat TEXT,
     ttd_path TEXT,

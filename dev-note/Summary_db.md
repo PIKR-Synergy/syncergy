@@ -173,7 +173,9 @@ erDiagram
         INT id PK
         DATE tanggal
         VARCHAR nama_acara
-        INT user_id FK
+        INT user_id FK -- opsional, bisa NULL untuk tamu
+        VARCHAR nik -- NIK peserta (tamu/non-user)
+        VARCHAR nama_peserta -- Nama peserta (tamu/non-user)
         ENUM status
         TEXT alamat
         TEXT ttd_path
@@ -456,12 +458,17 @@ erDiagram
 | id | INT (PK, AI) | ID unik kehadiran |
 | tanggal | DATE | Tanggal acara |
 | nama_acara | VARCHAR(255) | Nama acara |
-| user_id | INT | FK ke users |
+| user_id | INT (nullable) | FK ke users, opsional (NULL jika tamu) |
+| nik | VARCHAR(20) | NIK peserta (untuk tamu/non-user) |
+| nama_peserta | VARCHAR(100) | Nama peserta (untuk tamu/non-user) |
 | status | ENUM('hadir','tidak_hadir','izin') | Status hadir |
 | alamat | TEXT | Alamat saat hadir |
 | ttd_path | TEXT | Path tanda tangan |
 | waktu_hadir | DATETIME | Waktu hadir |
 | catatan | TEXT | Catatan tambahan |
+
+Penjelasan:  
+- Tamu dapat melakukan absensi acara tanpa perlu membuat akun, cukup mengakses link absensi dan mengisi NIK serta nama peserta.
 
 ### 8. `notulen_rapat`
 | Field | Tipe Data | Keterangan |

@@ -63,6 +63,8 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 * Email verification & password reset
 * Data archiving & backup ready
 * Notulen rapat dapat menyimpan dokumentasi (foto, file, atau link) sebagai bukti bahwa rapat telah digelar dan dilaksanakan
+* Absensi tamu acara dapat dilakukan tanpa akun, cukup melalui link khusus (tanpa login)
+* Pada absensi tamu, peserta mengisi NIK dan nama peserta, serta status kehadiran
 
 ## Arsitektur & Teknologi
 
@@ -89,7 +91,7 @@ Semua skema terdapat di `database.sql`:
 - `notulen_rapat` — Notulen rapat (dilengkapi dokumentasi: foto, file, atau link sebagai bukti pelaksanaan)
 - `program_kerja` — Program kerja (versioning, audit)
 - `kegiatan` — Kegiatan yang dilaksanakan
-- `daftar_hadir_acara` — Daftar hadir acara umum (bukan hanya rapat)
+- `daftar_hadir_acara` — Daftar hadir acara umum (bisa diisi oleh tamu tanpa akun melalui link, field: NIK, nama peserta, status, dll)
 - `buku_tamu` — Buku tamu digital
 - `file_uploads` — Upload file (dokumen, gambar, video, dsb)
 - `daftar_konseling` — Pendaftaran konseling (oleh tamu/user)
