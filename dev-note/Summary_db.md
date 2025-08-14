@@ -194,6 +194,7 @@ erDiagram
         ENUM status
         INT approved_by FK
         DATETIME approved_at
+        TEXT dokumentasi  -- Bukti pelaksanaan rapat (foto/file/link)
         DATETIME created_at
         DATETIME updated_at
     }
@@ -478,6 +479,7 @@ erDiagram
 | status | ENUM('draft','review','approved','published') | Status notulen |
 | approved_by | INT | FK ke users |
 | approved_at | DATETIME | Waktu persetujuan |
+| dokumentasi | TEXT | Bukti pelaksanaan rapat (foto/file/link) |
 | created_at | DATETIME | Waktu pembuatan |
 | updated_at | DATETIME | Waktu update terakhir |
 

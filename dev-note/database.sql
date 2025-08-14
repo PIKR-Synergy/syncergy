@@ -198,6 +198,7 @@ CREATE TABLE notulen_rapat (
     status ENUM('draft', 'review', 'approved', 'published') DEFAULT 'draft',
     approved_by INT,
     approved_at DATETIME,
+    dokumentasi TEXT, -- Bukti pelaksanaan rapat (foto/file/link)
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (rapat_id) REFERENCES rapat(id) ON DELETE CASCADE,

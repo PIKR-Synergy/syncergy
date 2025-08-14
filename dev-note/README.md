@@ -62,6 +62,7 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 * Soft delete (`deleted_at` pada tabel utama)
 * Email verification & password reset
 * Data archiving & backup ready
+* Notulen rapat dapat menyimpan dokumentasi (foto, file, atau link) sebagai bukti bahwa rapat telah digelar dan dilaksanakan
 
 ## Arsitektur & Teknologi
 
@@ -85,7 +86,7 @@ Semua skema terdapat di `database.sql`:
 - `biodata_pengurus` — Biodata pengurus (relasi ke users, field tugas sesuai role)
 - `rapat` — Data rapat
 - `absensi_rapat` — Absensi peserta rapat
-- `notulen_rapat` — Notulen rapat
+- `notulen_rapat` — Notulen rapat (dilengkapi dokumentasi: foto, file, atau link sebagai bukti pelaksanaan)
 - `program_kerja` — Program kerja (versioning, audit)
 - `kegiatan` — Kegiatan yang dilaksanakan
 - `daftar_hadir_acara` — Daftar hadir acara umum (bukan hanya rapat)
