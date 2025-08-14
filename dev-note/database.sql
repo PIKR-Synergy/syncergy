@@ -24,7 +24,10 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'pengurus', 'konselor', 'tamu') NOT NULL,
+    role ENUM(
+        'admin', 'ketua', 'wakil', 'bendahara', 'sekretaris', 
+        'kominfo', 'humas', 'konselor', 'pendidik_sebaya', 'anggota', 'tamu'
+    ) NOT NULL,
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
     is_active BOOLEAN DEFAULT TRUE,
@@ -78,6 +81,7 @@ CREATE TABLE biodata_pengurus (
     nama_orang_tua VARCHAR(100),
     alamat TEXT,
     jabatan VARCHAR(100),
+    tugas TEXT,
     foto TEXT,
     keterangan TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -411,19 +415,26 @@ CREATE TABLE query_performance (
 INSERT INTO users (name, username, password_hash, role, email, email_verified, password_expires_at) VALUES
 ('Super Administrator', 'admin', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'admin', 'admin@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
 ('Dr. Konselor Utama', 'konselor1', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'konselor', 'konselor@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
-('Ketua Pengurus', 'pengurus1', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'pengurus', 'pengurus@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
-('Sekretaris', 'sekretaris', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'pengurus', 'sekretaris@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY));
+('Ketua Pengurus', 'ketua', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'ketua', 'ketua@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Wakil Ketua', 'wakil', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'wakil', 'wakil@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Bendahara', 'bendahara', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'bendahara', 'bendahara@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Sekretaris', 'sekretaris', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'sekretaris', 'sekretaris@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Kominfo', 'kominfo', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'kominfo', 'kominfo@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Humas', 'humas', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'humas', 'humas@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Pendidik Sebaya', 'pendidik_sebaya', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'pendidik_sebaya', 'sebaya@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('Anggota', 'anggota', '$2a$12$m016nMs6TzrsDsgEUqo7ju02h5AhIVzkgZVYjiG03VPcKZ9sSsLJK', 'anggota', 'anggota@pikr.synergy.com', TRUE, DATE_ADD(NOW(), INTERVAL 90 DAY));
 
 -- Insert sample biodata
-INSERT INTO biodata_pengurus (user_id, jabatan, alamat) VALUES
-(3, 'Ketua Pengurus', 'Jl. Pemuda No. 123, Jakarta'),
-(4, 'Sekretaris', 'Jl. Merdeka No. 456, Jakarta');
-
--- Insert sample program kerja
-INSERT INTO program_kerja (nama_kegiatan, tujuan, sasaran, frekuensi, status, pic_id, budget_allocated) VALUES
-('Sosialisasi PIK-R Sekolah', 'Memperkenalkan PIK-R kepada siswa-siswi', 'Siswa SMA/SMK se-Jakarta', 'Bulanan', 'aktif', 3, 5000000.00),
-('Konseling Kesehatan Reproduksi', 'Memberikan layanan konseling komprehensif', 'Remaja usia 15-24 tahun', 'Mingguan', 'aktif', 2, 3000000.00),
-('Pelatihan Peer Educator', 'Melatih remaja sebagai educator sebaya', 'Remaja aktif PIK-R', 'Bulanan', 'aktif', 3, 2000000.00);
+INSERT INTO biodata_pengurus (user_id, jabatan, tugas, alamat) VALUES
+(3, 'Ketua', 'Memimpin organisasi, pengambilan keputusan utama, koordinasi seluruh pengurus', 'Jl. Pemuda No. 123, Jakarta'),
+(4, 'Wakil Ketua', 'Mendampingi ketua, menggantikan ketua bila berhalangan, membantu koordinasi', 'Jl. Merdeka No. 456, Jakarta'),
+(5, 'Bendahara', 'Mengelola keuangan, membuat laporan keuangan, pengawasan anggaran', 'Jl. Mawar No. 789, Jakarta'),
+(6, 'Sekretaris', 'Administrasi, surat-menyurat, notulen rapat, dokumentasi', 'Jl. Melati No. 101, Jakarta'),
+(7, 'Kominfo', 'Publikasi, media sosial, dokumentasi digital, informasi internal/eksternal', 'Jl. Anggrek No. 202, Jakarta'),
+(8, 'Humas', 'Hubungan eksternal, kerjasama dengan mitra, komunikasi publik', 'Jl. Kenanga No. 303, Jakarta'),
+(9, 'Konselor', 'Memberikan layanan konseling, pendampingan remaja, edukasi kesehatan', 'Jl. Dahlia No. 404, Jakarta'),
+(10, 'Pendidik Sebaya', 'Edukasi sebaya, sosialisasi, peer support, fasilitator kegiatan', 'Jl. Sakura No. 505, Jakarta'),
+(11, 'Anggota', 'Partisipasi kegiatan, mendukung program kerja, pelaksanaan tugas sesuai arahan', 'Jl. Teratai No. 606, Jakarta');
 
 -- ===================================================================
 -- ENHANCED VIEWS

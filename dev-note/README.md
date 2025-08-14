@@ -23,8 +23,8 @@ Selamat datang di **Syncergy** versi 3.0! Dokumen ini ditujukan untuk developer 
 
 Syncergy adalah sistem informasi manajemen PIK-R (Pusat Informasi Konseling Remaja) yang komprehensif, menyediakan modul:
 
-* **Manajemen Pengguna**
-* **Profil Pengurus**
+* **Manajemen Pengguna** (role detail: ketua, wakil, bendahara, sekretaris, kominfo, humas, konselor, pendidik sebaya, anggota, tamu, admin)
+* **Profil Pengurus** (dengan tugas spesifik sesuai role)
 * **Rapat & Notulen**
 * **Konseling**
 * **Program Kerja & Kegiatan**
@@ -39,7 +39,18 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 
 ## Fitur Utama
 
-* Otentikasi & authorization berbasis role (admin, pengurus, konselor, tamu)
+* Otentikasi & authorization berbasis role:
+  - **admin**: akses penuh, pengaturan sistem
+  - **ketua**: memimpin organisasi, pengambilan keputusan utama
+  - **wakil**: mendampingi/menggantikan ketua, membantu koordinasi
+  - **bendahara**: mengelola keuangan, laporan keuangan, pengawasan anggaran
+  - **sekretaris**: administrasi, surat-menyurat, notulen, dokumentasi
+  - **kominfo**: publikasi, media sosial, dokumentasi digital
+  - **humas**: hubungan eksternal, kerjasama mitra, komunikasi publik
+  - **konselor**: layanan konseling, pendampingan remaja, edukasi kesehatan
+  - **pendidik_sebaya**: edukasi sebaya, peer support, fasilitator kegiatan
+  - **anggota**: partisipasi kegiatan, mendukung program kerja
+  - **tamu**: akses terbatas, pendaftaran konseling/buku tamu
 * Session management (tabel `user_sessions`)
 * Kebijakan password (expired, lock, reset, expiry 90 hari)
 * Audit log & data versioning (`activity_logs`, `data_versions`)
@@ -69,9 +80,9 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 Semua skema terdapat di `database.sql`:
 
 **Tabel utama:**
-- `users` — Pengguna sistem (role, password policy, soft delete, email verification)
+- `users` — Pengguna sistem (role detail: ketua, wakil, bendahara, sekretaris, kominfo, humas, konselor, pendidik_sebaya, anggota, tamu, admin)
 - `user_sessions` — Manajemen sesi login (multi-device, expiry, IP, user agent)
-- `biodata_pengurus` — Biodata pengurus (relasi ke users)
+- `biodata_pengurus` — Biodata pengurus (relasi ke users, field tugas sesuai role)
 - `rapat` — Data rapat
 - `absensi_rapat` — Absensi peserta rapat
 - `notulen_rapat` — Notulen rapat

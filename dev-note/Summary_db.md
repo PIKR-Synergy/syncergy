@@ -87,7 +87,7 @@ erDiagram
         VARCHAR name
         VARCHAR username UNIQUE
         VARCHAR password_hash
-        ENUM role
+        ENUM role  -- ketua, wakil, bendahara, sekretaris, kominfo, humas, konselor, pendidik_sebaya, anggota, tamu, admin
         VARCHAR email UNIQUE
         VARCHAR phone
         BOOLEAN is_active
@@ -104,6 +104,19 @@ erDiagram
         DATETIME updated_at
         DATETIME deleted_at
     }
+    biodata_pengurus {
+        INT id PK
+        INT user_id FK
+        DATE tanggal_lahir
+        VARCHAR nama_orang_tua
+        TEXT alamat
+        VARCHAR jabatan
+        TEXT tugas
+        TEXT foto
+        TEXT keterangan
+        DATETIME created_at
+        DATETIME updated_at
+    }
     user_sessions {
         VARCHAR id PK
         INT user_id FK
@@ -113,18 +126,6 @@ erDiagram
         DATETIME created_at
         DATETIME last_activity_at
         DATETIME expires_at
-    }
-    biodata_pengurus {
-        INT id PK
-        INT user_id FK
-        DATE tanggal_lahir
-        VARCHAR nama_orang_tua
-        TEXT alamat
-        VARCHAR jabatan
-        TEXT foto
-        TEXT keterangan
-        DATETIME created_at
-        DATETIME updated_at
     }
     rapat {
         INT id PK
@@ -356,7 +357,7 @@ erDiagram
 | name | VARCHAR(100) | Nama lengkap |
 | username | VARCHAR(50) | Username login (UNIQUE) |
 | password_hash | VARCHAR(255) | Password di-hash (bcrypt) |
-| role | ENUM('admin','pengurus','konselor','tamu') | Peran pengguna |
+| role | ENUM('admin','ketua','wakil','bendahara','sekretaris','kominfo','humas','konselor','pendidik_sebaya','anggota','tamu') | Peran pengguna |
 | email | VARCHAR(100) | Email (UNIQUE jika diisi) |
 | phone | VARCHAR(20) | Nomor telepon |
 | is_active | BOOLEAN | Status aktif (default: TRUE) |
@@ -394,6 +395,7 @@ erDiagram
 | nama_orang_tua | VARCHAR(100) | Nama orang tua |
 | alamat | TEXT | Alamat |
 | jabatan | VARCHAR(100) | Jabatan organisasi |
+| tugas | TEXT | Tugas utama sesuai role |
 | foto | TEXT | Path/link foto |
 | keterangan | TEXT | Keterangan tambahan |
 | created_at | DATETIME | Waktu pembuatan |
