@@ -435,9 +435,9 @@ INSERT INTO biodata_pengurus (user_id, jabatan, tugas, alamat) VALUES
 (6, 'Sekretaris', 'Administrasi, surat-menyurat, notulen rapat, dokumentasi', 'Jl. Melati No. 101, Jakarta'),
 (7, 'Kominfo', 'Publikasi, media sosial, dokumentasi digital, informasi internal/eksternal', 'Jl. Anggrek No. 202, Jakarta'),
 (8, 'Humas', 'Hubungan eksternal, kerjasama dengan mitra, komunikasi publik', 'Jl. Kenanga No. 303, Jakarta'),
-(9, 'Konselor', 'Memberikan layanan konseling, pendampingan remaja, edukasi kesehatan', 'Jl. Dahlia No. 404, Jakarta'),
-(10, 'Pendidik Sebaya', 'Edukasi sebaya, sosialisasi, peer support, fasilitator kegiatan', 'Jl. Sakura No. 505, Jakarta'),
-(11, 'Anggota', 'Partisipasi kegiatan, mendukung program kerja, pelaksanaan tugas sesuai arahan', 'Jl. Teratai No. 606, Jakarta');
+(2, 'Konselor', 'Memberikan layanan konseling, pendampingan remaja, edukasi kesehatan', 'Jl. Dahlia No. 404, Jakarta'),
+(9, 'Pendidik Sebaya', 'Edukasi sebaya, sosialisasi, peer support, fasilitator kegiatan', 'Jl. Sakura No. 505, Jakarta'),
+(10, 'Anggota', 'Partisipasi kegiatan, mendukung program kerja, pelaksanaan tugas sesuai arahan', 'Jl. Teratai No. 606, Jakarta');
 
 -- ===================================================================
 -- ENHANCED VIEWS
