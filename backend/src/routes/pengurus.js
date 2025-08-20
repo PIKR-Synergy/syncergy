@@ -76,13 +76,13 @@ router.delete('/:id', auditMiddleware, async (req, res) => {
   }
 });
 
-export default router;
-    if (!rows.length) return res.status(404).json({ message: 'Pengurus tidak ditemukan.' });
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ message: 'Gagal mengambil detail pengurus.' });
-  }
-});
+// export default router;
+//     if (!rows.length) return res.status(404).json({ message: 'Pengurus tidak ditemukan.' });
+//     res.json(rows[0]);
+//   } catch (err) {
+//     res.status(500).json({ message: 'Gagal mengambil detail pengurus.' });
+//   }
+// });
 
 // Tambah biodata pengurus
 router.post('/', async (req, res) => {
