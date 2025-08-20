@@ -6,6 +6,10 @@ import pengurusRouter from './pengurus.js';
 import rapatRouter from './rapat.js';
 import konselingRouter from './konseling.js';
 import kegiatanRouter from './kegiatan.js';
+import programKerjaRouter from './programKerja.js';
+import tamuRouter from './tamu.js';
+import fileUploadRouter from './fileUpload.js';
+import auditRouter from './audit.js';
 
 const router = Router();
 
@@ -16,5 +20,9 @@ router.use('/pengurus', pengurusRouter);
 router.use('/rapat', rapatRouter);
 router.use('/konseling', konselingRouter);
 router.use('/kegiatan', kegiatanRouter);
+router.use('/program-kerja', programKerjaRouter);
+router.use('/tamu', tamuRouter);
+router.use('/file-upload', fileUploadRouter);
+router.use('/audit', auditRouter);
 
 export default router;
