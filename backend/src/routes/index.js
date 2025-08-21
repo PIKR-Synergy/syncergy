@@ -10,6 +10,11 @@ import programKerjaRouter from './programKerja.js';
 import tamuRouter from './tamu.js';
 import fileUploadRouter from './fileUpload.js';
 import auditRouter from './audit.js';
+import absensiRapatRouter from './absensiRapat.js';
+import notulenRapatRouter from './notulenRapat.js';
+import daftarHadirAcaraRouter from './daftarHadirAcara.js';
+import bukuTamuRouter from './bukuTamu.js';
+import daftarKonselingRouter from './daftarKonseling.js';
 
 const router = Router();
 
@@ -24,5 +29,10 @@ router.use('/program-kerja', programKerjaRouter);
 router.use('/tamu', tamuRouter);
 router.use('/file-upload', fileUploadRouter);
 router.use('/audit', auditRouter);
+router.use('/absensi-rapat', absensiRapatRouter);
+router.use('/notulen-rapat', notulenRapatRouter);
+router.use('/daftar-hadir-acara', daftarHadirAcaraRouter);
+router.use('/buku-tamu', bukuTamuRouter);
+router.use('/daftar-konseling', daftarKonselingRouter);
 
 export default router;
