@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "Syncergy CMS API",
+    "description": "Postman collection untuk seluruh endpoint utama backend Syncergy CMS.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "login"]},
+        "body": {"mode": "raw", "raw": "{\"username\":\"admin\",\"password\":\"admin\"}"}
+      }
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "register"]},
+        "body": {"mode": "raw", "raw": "{\"name\":\"Test\",\"username\":\"testuser\",\"password\":\"testpass\",\"role\":\"anggota\",\"email\":\"test@mail.com\"}"}
+      }
+    },
+    {
+      "name": "Users - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/users", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "users"]}
+      }
+    },
+    {
+      "name": "Users - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/users", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "users"]},
+        "body": {"mode": "raw", "raw": "{\"name\":\"User Baru\",\"username\":\"userbaru\",\"password\":\"pass\",\"role\":\"anggota\",\"email\":\"baru@mail.com\"}"}
+      }
+    },
+    {
+      "name": "Users - Update",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/users/1", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "users", "1"]},
+        "body": {"mode": "raw", "raw": "{\"name\":\"User Update\"}"}
+      }
+    },
+    {
+      "name": "Users - Delete (Soft)",
+      "request": {
+        "method": "DELETE",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/users/1", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "users", "1"]}
+      }
+    },
+    {
+      "name": "Session - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/sessions", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "sessions"]}
+      }
+    },
+    {
+      "name": "Session - Logout",
+      "request": {
+        "method": "DELETE",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/sessions/{{session_id}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "sessions", "{{session_id}}"]}
+      }
+    },
+    {
+      "name": "Rapat - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/rapat", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "rapat"]}
+      }
+    },
+    {
+      "name": "Rapat - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/rapat", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "rapat"]},
+        "body": {"mode": "raw", "raw": "{\"nama_rapat\":\"Rapat Test\",\"isi\":\"Deskripsi\",\"tanggal_rapat\":\"2025-08-21 10:00:00\",\"tempat\":\"Ruang 1\",\"status\":\"terjadwal\"}"}
+      }
+    },
+    {
+      "name": "Absensi Rapat - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/absensi-rapat", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "absensi-rapat"]},
+        "body": {"mode": "raw", "raw": "{\"rapat_id\":1,\"user_id\":2,\"status\":\"hadir\",\"alamat\":\"Jakarta\"}"}
+      }
+    },
+    {
+      "name": "Notulen Rapat - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/notulen-rapat/1", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "notulen-rapat", "1"]}
+      }
+    },
+    {
+      "name": "Notulen Rapat - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/notulen-rapat", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "notulen-rapat"]},
+        "body": {"mode": "raw", "raw": "{\"rapat_id\":1,\"tanggal\":\"2025-08-21\",\"waktu\":\"10:00:00\",\"tempat\":\"Ruang 1\",\"jumlah_peserta\":10,\"materi\":\"Materi\",\"isi_notulen\":\"Isi\",\"notulis_id\":2,\"status\":\"draft\"}"}
+      }
+    },
+    {
+      "name": "Program Kerja - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/program-kerja", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "program-kerja"]}
+      }
+    },
+    {
+      "name": "Program Kerja - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/program-kerja", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "program-kerja"]},
+        "body": {"mode": "raw", "raw": "{\"nama\":\"Program Baru\",\"deskripsi\":\"Deskripsi\",\"tanggal_mulai\":\"2025-08-21\",\"tanggal_selesai\":\"2025-08-22\"}"}
+      }
+    },
+    {
+      "name": "Kegiatan - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/kegiatan", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "kegiatan"]}
+      }
+    },
+    {
+      "name": "Kegiatan - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/kegiatan", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "kegiatan"]},
+        "body": {"mode": "raw", "raw": "{\"nama_kegiatan\":\"Kegiatan Baru\",\"tanggal\":\"2025-08-21\"}"}
+      }
+    },
+    {
+      "name": "Buku Tamu - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/buku-tamu", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "buku-tamu"]}
+      }
+    },
+    {
+      "name": "Buku Tamu - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/buku-tamu", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "buku-tamu"]},
+        "body": {"mode": "raw", "raw": "{\"tanggal\":\"2025-08-21\",\"nama\":\"Tamu Baru\",\"instansi\":\"Instansi\",\"tujuan\":\"Kunjungan\"}"}
+      }
+    },
+    {
+      "name": "Daftar Hadir Acara - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/daftar-hadir-acara", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "daftar-hadir-acara"]}
+      }
+    },
+    {
+      "name": "Daftar Hadir Acara - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/daftar-hadir-acara", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "daftar-hadir-acara"]},
+        "body": {"mode": "raw", "raw": "{\"tanggal\":\"2025-08-21\",\"nama_acara\":\"Acara Test\",\"nik\":\"1234567890\",\"nama_peserta\":\"Peserta Test\",\"status\":\"hadir\"}"}
+      }
+    },
+    {
+      "name": "Konseling - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/konseling", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "konseling"]}
+      }
+    },
+    {
+      "name": "Konseling - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/konseling", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "konseling"]},
+        "body": {"mode": "raw", "raw": "{\"tanggal\":\"2025-08-21\",\"tema\":\"Tema Konseling\",\"konselor_id\":2,\"peserta_id\":3,\"jenis\":\"individual\",\"status\":\"terjadwal\"}"}
+      }
+    },
+    {
+      "name": "Daftar Konseling - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/daftar-konseling", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "daftar-konseling"]}
+      }
+    },
+    {
+      "name": "Daftar Konseling - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "url": {"raw": "http://localhost:3000/api/daftar-konseling", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "daftar-konseling"]},
+        "body": {"mode": "raw", "raw": "{\"tanggal_daftar\":\"2025-08-21\",\"tanggal_konseling\":\"2025-08-22\",\"konselor_id\":2,\"nama_pendaftar\":\"Tamu\",\"jenis_konseling\":\"offline\",\"topik_konseling\":\"Topik\"}"}
+      }
+    },
+    {
+      "name": "File Upload - Create",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/file-upload", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "file-upload"]},
+        "body": {"mode": "formdata", "formdata": [{"key": "file", "type": "file", "src": ""}]}
+      }
+    },
+    {
+      "name": "Audit Log - List",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {"raw": "http://localhost:3000/api/audit", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "audit"]}
+      }
+    }
+  ]
+}
