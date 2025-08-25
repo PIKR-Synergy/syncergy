@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "Syncergy Backend API",
+    "description": "Postman collection for all backend API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        { "name": "List Users", "request": { "method": "GET", "url": "{{base_url}}/api/users" } },
+        { "name": "Create User", "request": { "method": "POST", "url": "{{base_url}}/api/users", "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password\",\n  \"role\": \"admin\"\n}" } } },
+        { "name": "Update User", "request": { "method": "PUT", "url": "{{base_url}}/api/users/1", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Doe\"\n}" } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "url": "{{base_url}}/api/users/1" } }
+      ]
+    },
+    {
+      "name": "User Sessions",
+      "item": [
+        { "name": "List Sessions", "request": { "method": "GET", "url": "{{base_url}}/api/sessions" } },
+        { "name": "Delete Session", "request": { "method": "DELETE", "url": "{{base_url}}/api/sessions/1" } }
+      ]
+    },
+    {
+      "name": "Biodata Pengurus",
+      "item": [
+        { "name": "Get Biodata", "request": { "method": "GET", "url": "{{base_url}}/api/biodata/1" } },
+        { "name": "Create Biodata", "request": { "method": "POST", "url": "{{base_url}}/api/biodata", "body": { "mode": "raw", "raw": "{\n  \"user_id\": 1,\n  \"tugas\": \"Ketua\"\n}" } } },
+        { "name": "Update Biodata", "request": { "method": "PUT", "url": "{{base_url}}/api/biodata/1", "body": { "mode": "raw", "raw": "{\n  \"tugas\": \"Bendahara\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Rapat & Absensi",
+      "item": [
+        { "name": "List Rapat", "request": { "method": "GET", "url": "{{base_url}}/api/rapat" } },
+        { "name": "Create Rapat", "request": { "method": "POST", "url": "{{base_url}}/api/rapat", "body": { "mode": "raw", "raw": "{\n  \"judul\": \"Rapat Bulanan\"\n}" } } },
+        { "name": "Absensi Rapat", "request": { "method": "POST", "url": "{{base_url}}/api/rapat/1/absensi", "body": { "mode": "raw", "raw": "{\n  \"user_id\": 1,\n  \"status\": \"hadir\"\n}" } } },
+        { "name": "Create Notulen", "request": { "method": "POST", "url": "{{base_url}}/api/notulen", "body": { "mode": "raw", "raw": "{\n  \"rapat_id\": 1,\n  \"catatan\": \"Diskusi berjalan lancar\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Program Kerja & Kegiatan",
+      "item": [
+        { "name": "List Program Kerja", "request": { "method": "GET", "url": "{{base_url}}/api/program-kerja" } },
+        { "name": "Create Program Kerja", "request": { "method": "POST", "url": "{{base_url}}/api/program-kerja", "body": { "mode": "raw", "raw": "{\n  \"nama\": \"Program A\"\n}" } } },
+        { "name": "Update Program Kerja", "request": { "method": "PUT", "url": "{{base_url}}/api/program-kerja/1", "body": { "mode": "raw", "raw": "{\n  \"nama\": \"Program B\"\n}" } } },
+        { "name": "List Kegiatan", "request": { "method": "GET", "url": "{{base_url}}/api/kegiatan" } },
+        { "name": "Create Kegiatan", "request": { "method": "POST", "url": "{{base_url}}/api/kegiatan", "body": { "mode": "raw", "raw": "{\n  \"nama\": \"Kegiatan A\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Daftar Hadir Acara & Buku Tamu",
+      "item": [
+        { "name": "List Daftar Hadir Acara", "request": { "method": "GET", "url": "{{base_url}}/api/daftar-hadir-acara" } },
+        { "name": "Create Daftar Hadir Acara", "request": { "method": "POST", "url": "{{base_url}}/api/daftar-hadir-acara", "body": { "mode": "raw", "raw": "{\n  \"nik\": \"1234567890\",\n  \"nama\": \"Tamu A\",\n  \"status\": \"hadir\"\n}" } } },
+        { "name": "List Buku Tamu", "request": { "method": "GET", "url": "{{base_url}}/api/buku-tamu" } },
+        { "name": "Create Buku Tamu", "request": { "method": "POST", "url": "{{base_url}}/api/buku-tamu", "body": { "mode": "raw", "raw": "{\n  \"nama\": \"Tamu B\"\n}" } } }
+      ]
+    },
+    {
+      "name": "File Uploads",
+      "item": [
+        { "name": "List File Uploads", "request": { "method": "GET", "url": "{{base_url}}/api/file-uploads" } },
+        { "name": "Upload File", "request": { "method": "POST", "url": "{{base_url}}/api/file-uploads" } }
+      ]
+    },
+    {
+      "name": "Konseling",
+      "item": [
+        { "name": "List Daftar Konseling", "request": { "method": "GET", "url": "{{base_url}}/api/daftar-konseling" } },
+        { "name": "Create Daftar Konseling", "request": { "method": "POST", "url": "{{base_url}}/api/daftar-konseling", "body": { "mode": "raw", "raw": "{\n  \"user_id\": 1,\n  \"jenis\": \"individu\"\n}" } } },
+        { "name": "Update Daftar Konseling Status", "request": { "method": "PUT", "url": "{{base_url}}/api/daftar-konseling/1", "body": { "mode": "raw", "raw": "{\n  \"status\": \"disetujui\"\n}" } } },
+        { "name": "List Konseling Sessions", "request": { "method": "GET", "url": "{{base_url}}/api/konseling" } },
+        { "name": "Update Konseling Session", "request": { "method": "PUT", "url": "{{base_url}}/api/konseling/1", "body": { "mode": "raw", "raw": "{\n  \"hasil\": \"Selesai\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Audit & Versioning",
+      "item": [
+        { "name": "List Activity Logs", "request": { "method": "GET", "url": "{{base_url}}/api/activity-logs" } },
+        { "name": "List Data Versions", "request": { "method": "GET", "url": "{{base_url}}/api/data-versions" } },
+        { "name": "Query Performance Stats", "request": { "method": "GET", "url": "{{base_url}}/api/performance" } }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        { "name": "Monthly Report", "request": { "method": "GET", "url": "{{base_url}}/api/report/monthly?year=2025&month=8" } },
+        { "name": "Security Audit", "request": { "method": "GET", "url": "{{base_url}}/api/security-audit" } }
+      ]
+    }
+  ]
+}
