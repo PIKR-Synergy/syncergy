@@ -68,7 +68,7 @@ Sistem dibangun dengan arsitektur **backend API** terpisah dari frontend, memanf
 
 ## Arsitektur & Teknologi
 
-* **Backend**: PHP + Laravel 10
+* **Backend**: Node.js
 * **Desain Arsitektur**: MVC (Model-View-Controller)
 * **ORM**: Eloquent ORM
 * **Database**: MySQL 8.x / MariaDB (support JSON, event scheduler, fulltext)
@@ -400,3 +400,5 @@ Aplikasi menggunakan arsitektur **separated frontend & backend** berbasis **REST
 - Selalu cek dan update dokumentasi internal pada `database.sql` untuk perubahan skema/fitur
 
 ---
+
+> TBH, i dont even understand javascript, so this project is discontinue
